@@ -79,16 +79,19 @@
 
 
 
-<meta name="description" content="一个改变不了世界只能改变自己的iOSer">
-<meta property="og:type" content="website">
-<meta property="og:title" content="objChen">
-<meta property="og:url" content="http://objchen.cn/index.html">
+<meta name="description" content="聊聊iOS中的PromiseKit 项目中使用Block频次很高，经常用到回调闭包多级的嵌套，所以最近对Promise比较感兴趣。 很巧，今天技术群里有人抛出一个问题。一个非常常见的需求，如果是你，你会怎么做？会不会使用一种更优雅的方式？  PM：我们要实现一个下载音频的功能，下载前需要做这些处理。  如果网络异常，直接提示网络异常并退出下载； 如果是4G网络，需要弹窗提醒用户选择是否继续下载，用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊iOS中的PromiseKit">
+<meta property="og:url" content="http://objchen.cn/2018/04/20/聊聊iOS中的PromiseKit/index.html">
 <meta property="og:site_name" content="objChen">
-<meta property="og:description" content="一个改变不了世界只能改变自己的iOSer">
+<meta property="og:description" content="聊聊iOS中的PromiseKit 项目中使用Block频次很高，经常用到回调闭包多级的嵌套，所以最近对Promise比较感兴趣。 很巧，今天技术群里有人抛出一个问题。一个非常常见的需求，如果是你，你会怎么做？会不会使用一种更优雅的方式？  PM：我们要实现一个下载音频的功能，下载前需要做这些处理。  如果网络异常，直接提示网络异常并退出下载； 如果是4G网络，需要弹窗提醒用户选择是否继续下载，用">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/objChen/StaticResources/master/PromiseKitResources.png">
+<meta property="og:updated_time" content="2018-04-24T08:40:00.207Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="objChen">
-<meta name="twitter:description" content="一个改变不了世界只能改变自己的iOSer">
+<meta name="twitter:title" content="聊聊iOS中的PromiseKit">
+<meta name="twitter:description" content="聊聊iOS中的PromiseKit 项目中使用Block频次很高，经常用到回调闭包多级的嵌套，所以最近对Promise比较感兴趣。 很巧，今天技术群里有人抛出一个问题。一个非常常见的需求，如果是你，你会怎么做？会不会使用一种更优雅的方式？  PM：我们要实现一个下载音频的功能，下载前需要做这些处理。  如果网络异常，直接提示网络异常并退出下载； 如果是4G网络，需要弹窗提醒用户选择是否继续下载，用">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/objChen/StaticResources/master/PromiseKitResources.png">
 
 
 
@@ -118,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="http://objchen.cn/"/>
+  <link rel="canonical" href="http://objchen.cn/2018/04/20/聊聊iOS中的PromiseKit/"/>
 
 
 
 
 
-  <title>objChen</title>
+  <title>聊聊iOS中的PromiseKit | objChen</title>
   
 
 
@@ -143,8 +146,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -217,9 +219,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -249,9 +251,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/20/聊聊iOS中的PromiseKit/" itemprop="url">聊聊iOS中的PromiseKit</a></h1>
+          <h1 class="post-title" itemprop="name headline">聊聊iOS中的PromiseKit</h1>
         
 
         <div class="post-meta">
@@ -301,9 +301,7 @@
       
 
       
-        
-          
-            <h1 id="聊聊iOS中的PromiseKit"><a href="#聊聊iOS中的PromiseKit" class="headerlink" title="聊聊iOS中的PromiseKit"></a>聊聊iOS中的PromiseKit</h1><blockquote>
+        <h1 id="聊聊iOS中的PromiseKit"><a href="#聊聊iOS中的PromiseKit" class="headerlink" title="聊聊iOS中的PromiseKit"></a>聊聊iOS中的PromiseKit</h1><blockquote>
 <p>项目中使用Block频次很高，经常用到回调闭包多级的嵌套，所以最近对Promise比较感兴趣。</p>
 <p>很巧，今天技术群里有人抛出一个问题。一个非常常见的需求，如果是你，你会怎么做？会不会使用一种更优雅的方式？</p>
 </blockquote>
@@ -355,8 +353,6 @@
 <p>PMKWhen还可以传入存放prmise的字典。</p>
 <h5 id="一直在追求如何更有效率的开展工作"><a href="#一直在追求如何更有效率的开展工作" class="headerlink" title="一直在追求如何更有效率的开展工作"></a>一直在追求如何更有效率的开展工作</h5><p>项目中使用block频次之高，PromiseKit无疑是最优雅的处理CallBack hell的方式之一，学习了PromiseKit源码思想感触很深。异步问题，回调嵌套，回调地狱一直都是项目中的痛点，通过PromiseKit可以相对优雅的解决，使项目逻辑更加清晰。</p>
 
-          
-        
       
     </div>
     
@@ -373,12 +369,12 @@
       
 
       
+      
+      
 
       
 
       
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -388,10 +384,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -399,6 +396,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -419,8 +420,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -472,6 +482,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#聊聊iOS中的PromiseKit"><span class="nav-number">1.</span> <span class="nav-text">聊聊iOS中的PromiseKit</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Promise背景简介"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">Promise背景简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Promise应用"><span class="nav-number">1.0.0.2.</span> <span class="nav-text">Promise应用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#一直在追求如何更有效率的开展工作"><span class="nav-number">1.0.0.2.1.</span> <span class="nav-text">一直在追求如何更有效率的开展工作</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -612,6 +638,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
