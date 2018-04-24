@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="聊聊iOS中的PromiseKit 项目中使用Block频次很高，经常用到回调闭包多级的嵌套，所以最近对Promise比较感兴趣。 很巧，今天技术群里有人抛出一个问题。一个非常常见的需求，如果是你，你会怎么做？会不会使用一种更优雅的方式？  PM：我们要实现一个下载音频的功能，下载前需要做这些处理。  如果网络异常，直接提示网络异常并退出下载； 如果是4G网络，需要弹窗提醒用户选择是否继续下载，用">
+<meta name="description" content="#   项目中使用Block频次很高，经常用到回调闭包多级的嵌套，所以最近对Promise比较感兴趣。 很巧，今天技术群里有人抛出一个问题。一个非常常见的需求，如果是你，你会怎么做？会不会使用一种更优雅的方式？  PM：我们要实现一个下载音频的功能，下载前需要做这些处理。  如果网络异常，直接提示网络异常并退出下载； 如果是4G网络，需要弹窗提醒用户选择是否继续下载，用户点击下载后进入下载流程，取">
 <meta property="og:type" content="article">
 <meta property="og:title" content="聊聊iOS中的PromiseKit">
 <meta property="og:url" content="http://objchen.cn/2018/04/20/聊聊iOS中的PromiseKit/index.html">
 <meta property="og:site_name" content="objChen">
-<meta property="og:description" content="聊聊iOS中的PromiseKit 项目中使用Block频次很高，经常用到回调闭包多级的嵌套，所以最近对Promise比较感兴趣。 很巧，今天技术群里有人抛出一个问题。一个非常常见的需求，如果是你，你会怎么做？会不会使用一种更优雅的方式？  PM：我们要实现一个下载音频的功能，下载前需要做这些处理。  如果网络异常，直接提示网络异常并退出下载； 如果是4G网络，需要弹窗提醒用户选择是否继续下载，用">
+<meta property="og:description" content="#   项目中使用Block频次很高，经常用到回调闭包多级的嵌套，所以最近对Promise比较感兴趣。 很巧，今天技术群里有人抛出一个问题。一个非常常见的需求，如果是你，你会怎么做？会不会使用一种更优雅的方式？  PM：我们要实现一个下载音频的功能，下载前需要做这些处理。  如果网络异常，直接提示网络异常并退出下载； 如果是4G网络，需要弹窗提醒用户选择是否继续下载，用户点击下载后进入下载流程，取">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://raw.githubusercontent.com/objChen/StaticResources/master/PromiseKitResources.png">
-<meta property="og:updated_time" content="2018-04-24T08:40:00.207Z">
+<meta property="og:updated_time" content="2018-04-24T08:44:07.271Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="聊聊iOS中的PromiseKit">
-<meta name="twitter:description" content="聊聊iOS中的PromiseKit 项目中使用Block频次很高，经常用到回调闭包多级的嵌套，所以最近对Promise比较感兴趣。 很巧，今天技术群里有人抛出一个问题。一个非常常见的需求，如果是你，你会怎么做？会不会使用一种更优雅的方式？  PM：我们要实现一个下载音频的功能，下载前需要做这些处理。  如果网络异常，直接提示网络异常并退出下载； 如果是4G网络，需要弹窗提醒用户选择是否继续下载，用">
+<meta name="twitter:description" content="#   项目中使用Block频次很高，经常用到回调闭包多级的嵌套，所以最近对Promise比较感兴趣。 很巧，今天技术群里有人抛出一个问题。一个非常常见的需求，如果是你，你会怎么做？会不会使用一种更优雅的方式？  PM：我们要实现一个下载音频的功能，下载前需要做这些处理。  如果网络异常，直接提示网络异常并退出下载； 如果是4G网络，需要弹窗提醒用户选择是否继续下载，用户点击下载后进入下载流程，取">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/objChen/StaticResources/master/PromiseKitResources.png">
 
 
@@ -301,7 +301,8 @@
       
 
       
-        <h1 id="聊聊iOS中的PromiseKit"><a href="#聊聊iOS中的PromiseKit" class="headerlink" title="聊聊iOS中的PromiseKit"></a>聊聊iOS中的PromiseKit</h1><blockquote>
+        <p># </p>
+<blockquote>
 <p>项目中使用Block频次很高，经常用到回调闭包多级的嵌套，所以最近对Promise比较感兴趣。</p>
 <p>很巧，今天技术群里有人抛出一个问题。一个非常常见的需求，如果是你，你会怎么做？会不会使用一种更优雅的方式？</p>
 </blockquote>
@@ -492,7 +493,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#聊聊iOS中的PromiseKit"><span class="nav-number">1.</span> <span class="nav-text">聊聊iOS中的PromiseKit</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Promise背景简介"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">Promise背景简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Promise应用"><span class="nav-number">1.0.0.2.</span> <span class="nav-text">Promise应用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#一直在追求如何更有效率的开展工作"><span class="nav-number">1.0.0.2.1.</span> <span class="nav-text">一直在追求如何更有效率的开展工作</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Promise背景简介"><span class="nav-number">1.</span> <span class="nav-text">Promise背景简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Promise应用"><span class="nav-number">2.</span> <span class="nav-text">Promise应用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#一直在追求如何更有效率的开展工作"><span class="nav-number">2.1.</span> <span class="nav-text">一直在追求如何更有效率的开展工作</span></a></li></ol></li></ol></div>
             
 
           </div>
