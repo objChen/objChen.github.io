@@ -448,8 +448,7 @@
 
       
         
-          
-            <blockquote>
+          <blockquote>
 <p>项目中使用Block频次很高，经常用到回调闭包多级的嵌套，所以最近对Promise比较感兴趣。</p>
 <p>很巧，今天技术群里有人抛出一个问题。一个非常常见的需求，如果是你，你会怎么做？会不会使用一种更优雅的方式？</p>
 </blockquote>
@@ -461,47 +460,14 @@
 <li>下载时需要获取下载地址，获取到下载地址后，进入下载；</li>
 <li>下载完成需要刷新UI；</li>
 </ol>
-<p>梳理完逻辑后是这样的：</p>
-<p><img src="https://raw.githubusercontent.com/objChen/StaticResources/master/PromiseKitResources.png" alt="PromiseKitR"></p>
-<p>这个好办，不一会就写完了，结果是这样的</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">- (void)downloadCallBack:(void(^)(BOOL isSuccess))callback &#123;</span><br><span class="line">    if ([self isBadNetwork])&#123;</span><br><span class="line">        callback(NO);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    if ([self is4GNetwork])&#123;</span><br><span class="line">        [self showAlert:^(NSInteger index) &#123;</span><br><span class="line">            if (index == 1)&#123;</span><br><span class="line">                [self requestDownloadUrl:^(NSString *url) &#123;</span><br><span class="line">                    [self startDownloadWithURLString:url callback:^(BOOL isSuccsee) &#123;</span><br><span class="line">                        callback(YES);</span><br><span class="line">                    &#125;];</span><br><span class="line">                &#125;];</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                [self requestDownloadUrl:^(NSString *url) &#123;</span><br><span class="line">                    [self startDownloadWithURLString:url callback:^(BOOL isSuccsee) &#123;</span><br><span class="line">                        callback(YES);</span><br><span class="line">                    &#125;];</span><br><span class="line">                &#125;];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这种写法主要有回调地狱和代码冗余问题，后期维护困难。</p>
-<p>何为优雅？如何优雅？</p>
-<p>Promise！</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">- (void)downloadForPromiseCallBack:(void(^)(BOOL isSuccess))callback &#123;</span><br><span class="line">    // 检查是否可以下载</span><br><span class="line">    AnyPromise *checkPromise = [self checkCanDownloadPromise];</span><br><span class="line">    checkPromise.then(^()&#123;</span><br><span class="line">        // 请求下载地址</span><br><span class="line">        return [self requestUrlPromise];</span><br><span class="line">    &#125;).then(^(NSString *downloadUrl)&#123;</span><br><span class="line">        // 开始下载音频</span><br><span class="line">        return [self downloadPromiseWithURLString:downloadUrl];</span><br><span class="line">    &#125;).then(^()&#123;</span><br><span class="line">        // 下载成功</span><br><span class="line">        if (callback)&#123;</span><br><span class="line">            callback(YES);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).catch(^(NSError *error)&#123;</span><br><span class="line">        // 所有的异常</span><br><span class="line">        callback(NO);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="Promise背景简介"><a href="#Promise背景简介" class="headerlink" title="Promise背景简介"></a>Promise背景简介</h4><p>Promise最初被提出是在 <a href="http://erights.org/elib/distrib/pipeline.html" target="_blank" rel="noopener">E语言</a>中， 它是基于并列/并行处理设计的一种编程语言。</p>
-<p>Promise更多应用于 JavaScript，主要是为了解决 JavaScript 的 Callback Hell(回调地狱) 问题。 简单来说就是， JS 中很异步函数都是用 callback 的形式返回结果，而开发者经常会连续的使用这些异步调用，最后就导致回调嵌套的层级越来越深，严重影响代码的结构和可读性。Promise 的出现，就是用来解决 Callback Hell 这个问题的(用线性调用的接口来封装回调嵌套)。</p>
-<h4 id="Promise应用"><a href="#Promise应用" class="headerlink" title="Promise应用"></a>Promise应用</h4><ul>
-<li>GCD异步下载图片</li>
-</ul>
-<p>当我们需要异步下载一张图片并赋给Image 用GCD实现，请看下面这一坨OC：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span><br><span class="line">    dispatch_async(queue, ^&#123;</span><br><span class="line">        NSData * imageData = [NSData dataWithContentsOfURL:imgUrl];</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">            imgv.image = [UIImage imageWithData:imageData];</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
-<p>用 Promise 中的 dispatch_promise ：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">dispatch_promise(^&#123;</span><br><span class="line">        return [NSData dataWithContentsOfURL:imgUrl];</span><br><span class="line">    &#125;).then(^(NSData * imageData)&#123;</span><br><span class="line">        imgv.image = [UIImage imageWithData:imageData];</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
-<p>dispatch_promise做了什么事情？看源码不难发现dispatch_promise中为我们建好了队列并在then中返回了MainThread。</p>
-<ul>
-<li>用catch处理Error</li>
-</ul>
-<p>让我们再看看文章开头的那个例子</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">- (void)downloadForPromiseCallBack:(void(^)(BOOL isSuccess))callback &#123;</span><br><span class="line">    // 检查是否可以下载</span><br><span class="line">    AnyPromise *checkPromise = [self checkCanDownloadPromise];</span><br><span class="line">    checkPromise.then(^()&#123;</span><br><span class="line">        // 请求下载地址</span><br><span class="line">        return [self requestUrlPromise];</span><br><span class="line">    &#125;).then(^(NSString *downloadUrl)&#123;</span><br><span class="line">        // 开始下载音频</span><br><span class="line">        return [self downloadPromiseWithURLString:downloadUrl];</span><br><span class="line">    &#125;).then(^()&#123;</span><br><span class="line">        // 下载成功</span><br><span class="line">        if (callback)&#123;</span><br><span class="line">            callback(YES);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).catch(^(NSError *error)&#123;</span><br><span class="line">        // 所有的异常</span><br><span class="line">        callback(NO);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在之前需要在检查是否可以下载，请求下载地址和开始下载中分别对Error进行处理</p>
-<p>catch是怎样做的？在传递promise的链中，一旦中间任何一环产生了错误，都会传递到catch去执行Error Handler。</p>
-<ul>
-<li>always</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[self login].then(^()&#123;</span><br><span class="line">        if (callback)&#123;</span><br><span class="line">            callback(YES);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).catch(^(NSError *error)&#123;</span><br><span class="line">        if (callback)&#123;</span><br><span class="line">            callback(NO);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).always(^&#123;</span><br><span class="line">        // 结束</span><br><span class="line">        NSLog(@&quot;over&quot;);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
-<p>在所有的then和catch执行完还会执行always，根据业务选择是否实现。</p>
-<ul>
-<li>用PMKWhen处理多异步任务作为前置任务</li>
-</ul>
-<p>比如有一个这样的需求，需要从服务端下载两张图片，然后比较图片的size</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PMKWhen(@[[self downloadFirstPicture], [self downloadSecondPicture]]).then(^(NSArray *results)&#123;</span><br><span class="line">        [self comparePictureSizeWithFirstPicture:results.firstObject</span><br><span class="line">                                  sencondPicture:results.lastObject];</span><br><span class="line">    &#125;).catch(^&#123;</span><br><span class="line">        // Processing error</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
-<p>PMKWhen传入数组，数组中存放promise，当数组中所有promise执行完毕才会执行then。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">PMKWhen(@&#123;@&quot;firstPicture&quot;:[self downloadFirstPicture],</span><br><span class="line">          @&quot;secondPicture&quot;:[self downloadSecondPicture]</span><br><span class="line">          &#125;).then(^(NSArray *results)&#123;</span><br><span class="line">      [self comparePictureSizeWithFirstPicture:results[@&quot;firstPicture&quot;]</span><br><span class="line">                                  sencondPicture:results[@&quot;secondPicture&quot;]];</span><br><span class="line">  &#125;).catch(^&#123;</span><br><span class="line">      // Processing error</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
-<p>PMKWhen还可以传入存放prmise的字典。</p>
-<h5 id="一直在追求如何更有效率的开展工作"><a href="#一直在追求如何更有效率的开展工作" class="headerlink" title="一直在追求如何更有效率的开展工作"></a>一直在追求如何更有效率的开展工作</h5><p>项目中使用block频次之高，PromiseKit无疑是最优雅的处理CallBack hell的方式之一，学习了PromiseKit源码思想感触很深。异步问题，回调嵌套，回调地狱一直都是项目中的痛点，通过PromiseKit可以相对优雅的解决，使项目逻辑更加清晰。</p>
-
-          
+<p>~~
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/04/20/聊聊iOS中的PromiseKit/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
