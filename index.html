@@ -504,7 +504,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2017/07/16/iOS-关于GCD死锁的问题/">
+    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2018/04/18/iOS-OC数组遍历/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chen peng">
@@ -523,7 +523,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/07/16/iOS-关于GCD死锁的问题/" itemprop="url">iOS 关于GCD死锁的问题</a></h1>
+                <a class="post-title-link" href="/2018/04/18/iOS-OC数组遍历/" itemprop="url">iOS OC数组遍历</a></h1>
         
 
         <div class="post-meta">
@@ -535,8 +535,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-16T22:11:13+08:00">
-                2017-07-16
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-18T22:32:57+08:00">
+                2018-04-18
               </time>
             
 
@@ -575,12 +575,12 @@
       
         
           
-          1. 什么是GCD ?GCD，全称 Grand Central Dispatch。可翻译为”牛逼的中枢调度器”。它是纯C语言的，提供了非常多强大的函数。Grand是宏伟的、极重要的意思。
-GCD是提供了功能强大的任务和队列控制功能，相比于NSOperation更加底层，虽然现象苹果极力的推荐使用NS
+          遍历一个数组的方法有几种，for, forin, enumerateObjectsUsingBlock:方法。现在用得比较多的可能是enumerateObjectsUsingBlock:，它能很方便地让我们获取到数组中的元素及对应的索引，然后根据这些信息做一些操作，如下代码所示:
+123456789
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/07/16/iOS-关于GCD死锁的问题/#more" rel="contents">
+            <a class="btn" href="/2018/04/18/iOS-OC数组遍历/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -631,7 +631,7 @@ GCD是提供了功能强大的任务和队列控制功能，相比于NSOperation
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2017/06/30/iOS-再谈TableView性能优化/">
+    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2018/04/12/iOS-block导致EXC-BAD-ACCESS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chen peng">
@@ -650,7 +650,7 @@ GCD是提供了功能强大的任务和队列控制功能，相比于NSOperation
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/06/30/iOS-再谈TableView性能优化/" itemprop="url">iOS 再谈TableView性能优化</a></h1>
+                <a class="post-title-link" href="/2018/04/12/iOS-block导致EXC-BAD-ACCESS/" itemprop="url">iOS block导致EXC_BAD_ACCESS</a></h1>
         
 
         <div class="post-meta">
@@ -662,8 +662,8 @@ GCD是提供了功能强大的任务和队列控制功能，相比于NSOperation
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-30T21:33:48+08:00">
-                2017-06-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-12T23:43:35+08:00">
+                2018-04-12
               </time>
             
 
@@ -703,15 +703,14 @@ GCD是提供了功能强大的任务和队列控制功能，相比于NSOperation
         
           
           
-优化TableView性能
+在调用block时，如果这个block为nil，则程序会崩溃，报类似于EXC_BAD_ACCESS(code=1, address=0xc)异常[32位下的结果，如果是64位，则address=0x10]。
 
-1、cell复用
-复用很简单，这或许是所有iOS开发者最为熟知的一个优化内容，如下代码
-12345678-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIn
+在定义一个block时，编译器会在栈上创建一个结构体，类似于图2的结构体。
+123456
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/06/30/iOS-再谈TableView性能优化/#more" rel="contents">
+            <a class="btn" href="/2018/04/12/iOS-block导致EXC-BAD-ACCESS/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -762,7 +761,7 @@ GCD是提供了功能强大的任务和队列控制功能，相比于NSOperation
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2017/06/17/iOS-清除UIWebView缓存/">
+    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2018/04/02/iOS-UIImageView-gif/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chen peng">
@@ -781,7 +780,7 @@ GCD是提供了功能强大的任务和队列控制功能，相比于NSOperation
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/06/17/iOS-清除UIWebView缓存/" itemprop="url">iOS 清除UIWebView缓存</a></h1>
+                <a class="post-title-link" href="/2018/04/02/iOS-UIImageView-gif/" itemprop="url">iOS UIImageView gif</a></h1>
         
 
         <div class="post-meta">
@@ -793,8 +792,8 @@ GCD是提供了功能强大的任务和队列控制功能，相比于NSOperation
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-17T20:40:45+08:00">
-                2017-06-17
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-02T22:12:04+08:00">
+                2018-04-02
               </time>
             
 
@@ -833,15 +832,12 @@ GCD是提供了功能强大的任务和队列控制功能，相比于NSOperation
       
         
           
-          
-清除webview cookies&amp;缓存
-
-//清除cookies
-12345NSHTTPCookie *cookie;NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];for (coo
+          UIImageView显示gif图片有两种方式。当然前提都是先将gif中的每一帧取出来放到一个个UIImage对象中，将这些对象放到一个数组中，如下代码所示。
+1234567891011CGImageSourceRef source = CGImageSourceCreateWithData((__
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/06/17/iOS-清除UIWebView缓存/#more" rel="contents">
+            <a class="btn" href="/2018/04/02/iOS-UIImageView-gif/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -892,7 +888,7 @@ GCD是提供了功能强大的任务和队列控制功能，相比于NSOperation
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2017/06/06/iOS-唯一标识/">
+    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2018/03/29/Swift中String与CChar数组的转换/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chen peng">
@@ -911,7 +907,7 @@ GCD是提供了功能强大的任务和队列控制功能，相比于NSOperation
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/06/06/iOS-唯一标识/" itemprop="url">iOS 唯一标识</a></h1>
+                <a class="post-title-link" href="/2018/03/29/Swift中String与CChar数组的转换/" itemprop="url">Swift中String与CChar数组的转换</a></h1>
         
 
         <div class="post-meta">
@@ -923,8 +919,8 @@ GCD是提供了功能强大的任务和队列控制功能，相比于NSOperation
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-06T20:27:29+08:00">
-                2017-06-06
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-29T20:01:02+08:00">
+                2018-03-29
               </time>
             
 
@@ -963,14 +959,11 @@ GCD是提供了功能强大的任务和队列控制功能，相比于NSOperation
       
         
           
-          
-在开发过程中，我们常常需要获取设备的一个唯一标识，以便后续做相应的处理或者数据分析。在iOS平台中，随着各个版本的变迁，这一简单需求也充满了与苹果的斗智斗勇。
-
-UDIDUDID的全称是Unique Device Identifier，它是苹果iOS设备的唯一识别码，由40个字符的字母和数字组成。
+          在现阶段Swift的编码中，我们还是有很多场景需要调用一些C函数。在Swift与C的混编中，经常遇到的一个问题就是需要在两者中互相转换字符串。在C语言中，字符串通常是用一个char数组来表示，在Swift中，是用CChar数组来表示。从CChar的定义可以看到，其实际上是一个Int8类型，如下所示：
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/06/06/iOS-唯一标识/#more" rel="contents">
+            <a class="btn" href="/2018/03/29/Swift中String与CChar数组的转换/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1021,7 +1014,7 @@ UDIDUDID的全称是Unique Device Identifier，它是苹果iOS设备的唯一识
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2017/06/04/iOS-TableView-避免卡顿/">
+    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2018/03/19/Swift中随机数的使用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chen peng">
@@ -1040,7 +1033,7 @@ UDIDUDID的全称是Unique Device Identifier，它是苹果iOS设备的唯一识
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/06/04/iOS-TableView-避免卡顿/" itemprop="url">iOS TableView 避免卡顿</a></h1>
+                <a class="post-title-link" href="/2018/03/19/Swift中随机数的使用/" itemprop="url">Swift中随机数的使用</a></h1>
         
 
         <div class="post-meta">
@@ -1052,8 +1045,8 @@ UDIDUDID的全称是Unique Device Identifier，它是苹果iOS设备的唯一识
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-04T14:22:44+08:00">
-                2017-06-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-19T22:40:57+08:00">
+                2018-03-19
               </time>
             
 
@@ -1092,12 +1085,14 @@ UDIDUDID的全称是Unique Device Identifier，它是苹果iOS设备的唯一识
       
         
           
-          1.UITableViewCell重用机制？UITableView只会创建一屏幕（或者一屏幕多一点）的cell，其他都是取出来重用的。每当cell滑出屏幕的时候，就会放到一个集合中，当要显示某一位置的cell时，会先去集合中取，有的话，就直接拿出来显示，没有在创建。
-2.tableView滑动为什么
+          
+在我们开发的过程中，时不时地需要产生一些随机数。这里我们总结一下Swift中常用的一些随机数生成函数。这里我们将在Playground中来做些示例演示。
+
+整型随机数如果我们想要一个整型的随机数，则可以考虑用arc4random系列函数。我们可以通过man arc4random命令来看一下这个函数
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/06/04/iOS-TableView-避免卡顿/#more" rel="contents">
+            <a class="btn" href="/2018/03/19/Swift中随机数的使用/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1148,7 +1143,7 @@ UDIDUDID的全称是Unique Device Identifier，它是苹果iOS设备的唯一识
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2017/05/13/iOS中的路由方案-JLRoutes/">
+    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2018/03/09/iOS-键盘事件/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chen peng">
@@ -1167,7 +1162,7 @@ UDIDUDID的全称是Unique Device Identifier，它是苹果iOS设备的唯一识
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/05/13/iOS中的路由方案-JLRoutes/" itemprop="url">iOS中的路由方案 -- JLRoutes</a></h1>
+                <a class="post-title-link" href="/2018/03/09/iOS-键盘事件/" itemprop="url">iOS 键盘事件</a></h1>
         
 
         <div class="post-meta">
@@ -1179,8 +1174,8 @@ UDIDUDID的全称是Unique Device Identifier，它是苹果iOS设备的唯一识
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-13T21:05:46+08:00">
-                2017-05-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-09T22:31:48+08:00">
+                2018-03-09
               </time>
             
 
@@ -1219,12 +1214,12 @@ UDIDUDID的全称是Unique Device Identifier，它是苹果iOS设备的唯一识
       
         
           
-          路由由来路由层的概念在服务端是指url请求的分层解析，将一个请求分发到对应的应用处理程序。前端路由的主要作用是保证视图和URL的同步。移动端的路由层指的是将诸如App内页面访问、H5与App访问的访问请求和App间的访问请求，进行分发处理的逻辑层。
-路由主要应用场景1、App之间的相互跳转访问2、A
+          在涉及到表单输入的界面中，我们通常需要监听一些键盘事件，并根据实际需要来执行相应的操作。如，键盘弹起时，要让我们的UIScrollView自动收缩，以能看到整个UIScrollView的内容。为此，在UIWindow.h中定义了如下6个通知常量，来配合键盘在不同时间点的事件处理：
+123456UIK
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/05/13/iOS中的路由方案-JLRoutes/#more" rel="contents">
+            <a class="btn" href="/2018/03/09/iOS-键盘事件/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1275,7 +1270,7 @@ UDIDUDID的全称是Unique Device Identifier，它是苹果iOS设备的唯一识
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2017/04/24/iOS-WebView的JS交互-Cookie管理/">
+    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2017/09/30/iOS-中的单例/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chen peng">
@@ -1294,7 +1289,7 @@ UDIDUDID的全称是Unique Device Identifier，它是苹果iOS设备的唯一识
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/04/24/iOS-WebView的JS交互-Cookie管理/" itemprop="url">iOS WebView的JS交互&Cookie管理</a></h1>
+                <a class="post-title-link" href="/2017/09/30/iOS-中的单例/" itemprop="url">iOS 中的单例</a></h1>
         
 
         <div class="post-meta">
@@ -1306,8 +1301,8 @@ UDIDUDID的全称是Unique Device Identifier，它是苹果iOS设备的唯一识
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-24T23:35:42+08:00">
-                2017-04-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-30T10:18:45+08:00">
+                2017-09-30
               </time>
             
 
@@ -1346,14 +1341,12 @@ UDIDUDID的全称是Unique Device Identifier，它是苹果iOS设备的唯一识
       
         
           
-          
-介绍iOS中的WebView，并且由浅到深，一步步带你了解并掌握WebView的用法，JavaScript与Objective的交互，以及Cookie的管理、js的调试等。
-
-UIWebViewUIWebView基本用法首先要介绍的就是我们的老朋友UIWebView。相信对大多数小伙伴儿而言，UI
+          优点：1、提供了对唯一实例的受控访问。2、由于在系统内存中只存在一个对象，因此可以节约系统资源，对于一些需要频繁创建和销毁的对象单例模式无疑可以提高系统的性能。3、允许可变数目的实例。
+缺点：1、由于单利模式中没有抽象层，因此单例类的扩展有很大的困难。2、单例类的职责过重，在一定程度上违背了“单一职
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/04/24/iOS-WebView的JS交互-Cookie管理/#more" rel="contents">
+            <a class="btn" href="/2017/09/30/iOS-中的单例/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1404,7 +1397,7 @@ UIWebViewUIWebView基本用法首先要介绍的就是我们的老朋友UIWebVie
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2017/04/10/iOS-异常捕获-Crash-日志/">
+    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2017/08/19/iOS-UITableViewCell-中UItextView自适应高度/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chen peng">
@@ -1423,7 +1416,7 @@ UIWebViewUIWebView基本用法首先要介绍的就是我们的老朋友UIWebVie
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/04/10/iOS-异常捕获-Crash-日志/" itemprop="url">iOS 异常捕获 Crash 日志</a></h1>
+                <a class="post-title-link" href="/2017/08/19/iOS-UITableViewCell-中UItextView自适应高度/" itemprop="url">iOS UITableViewCell 中UItextView自适应高度</a></h1>
         
 
         <div class="post-meta">
@@ -1435,8 +1428,8 @@ UIWebViewUIWebView基本用法首先要介绍的就是我们的老朋友UIWebVie
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-10T22:07:04+08:00">
-                2017-04-10
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-19T23:16:49+08:00">
+                2017-08-19
               </time>
             
 
@@ -1475,12 +1468,12 @@ UIWebViewUIWebView基本用法首先要介绍的就是我们的老朋友UIWebVie
       
         
           
-          
-开发iOS应用，解决Crash问题始终是一个难题。Crash分为两种，一种是由EXC_BAD_ACCESS引起的，原因是访问了不属于本进程的内存地址，有可能是访问已被释放的内存；另一种是未被捕获的Objective-C异常（NSException），导致程序向自身发送了SIGABRT信号而崩溃。其
+          1、先新建控制器，在控制器中创建UItableVIew2、 新建在uitableVIewcell, 在cell添加UITextView控件，使用autolayout，并且设置代理对象为Cell，UITextVIew的代理方法
+1234567- (void)textViewDidChange:(UIT
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/04/10/iOS-异常捕获-Crash-日志/#more" rel="contents">
+            <a class="btn" href="/2017/08/19/iOS-UITableViewCell-中UItextView自适应高度/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1521,6 +1514,10 @@ UIWebViewUIWebView基本用法首先要介绍的就是我们的老朋友UIWebVie
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
 
           </div>
@@ -1568,7 +1565,7 @@ UIWebViewUIWebView基本用法首先要介绍的就是我们的老朋友UIWebVie
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
