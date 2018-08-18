@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="crash捕获," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="开发iOS应用，解决Crash问题始终是一个难题。Crash分为两种，一种是由EXC_BAD_ACCESS引起的，原因是访问了不属于本进程的内存地址，有可能是访问已被释放的内存；另一种是未被捕获的Objective-C异常（NSException），导致程序向自身发送了SIGABRT信号而崩溃。其实对于未捕获的Objective-C异常，我们是有办法将它记录下来的，如果日志记录得当，能够解决绝大">
+<meta name="keywords" content="crash捕获">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 异常捕获 Crash 日志">
+<meta property="og:url" content="http://objchen.cn/2017/04/10/iOS-异常捕获-Crash-日志/index.html">
+<meta property="og:site_name" content="objChen">
+<meta property="og:description" content="开发iOS应用，解决Crash问题始终是一个难题。Crash分为两种，一种是由EXC_BAD_ACCESS引起的，原因是访问了不属于本进程的内存地址，有可能是访问已被释放的内存；另一种是未被捕获的Objective-C异常（NSException），导致程序向自身发送了SIGABRT信号而崩溃。其实对于未捕获的Objective-C异常，我们是有办法将它记录下来的，如果日志记录得当，能够解决绝大">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-18T09:18:05.844Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 异常捕获 Crash 日志">
+<meta name="twitter:description" content="开发iOS应用，解决Crash问题始终是一个难题。Crash分为两种，一种是由EXC_BAD_ACCESS引起的，原因是访问了不属于本进程的内存地址，有可能是访问已被释放的内存；另一种是未被捕获的Objective-C异常（NSException），导致程序向自身发送了SIGABRT信号而崩溃。其实对于未捕获的Objective-C异常，我们是有办法将它记录下来的，如果日志记录得当，能够解决绝大">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://objchen.cn/2017/04/10/iOS-异常捕获-Crash-日志/"/>
+
+
+
+
+
+  <title>iOS 异常捕获 Crash 日志 | objChen</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">objChen</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">一直在追求如何更有效率的开展工作</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-about"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2017/04/10/iOS-异常捕获-Crash-日志/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chen peng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/objChen/StaticResources/master/nextAvatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="objChen">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS 异常捕获 Crash 日志</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-10T22:07:04+08:00">
+                2017-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>开发iOS应用，解决Crash问题始终是一个难题。Crash分为两种，一种是由<strong>EXC_BAD_ACCESS</strong>引起的，原因是访问了不属于本进程的内存地址，有可能是访问已被释放的内存；另一种是未被捕获的Objective-C异常（NSException），导致程序向自身发送了SIGABRT信号而崩溃。其实对于未捕获的Objective-C异常，我们是有办法将它记录下来的，如果日志记录得当，能够解决绝大部分崩溃的问题。</p>
+</blockquote>
+<h3 id="系统Crash"><a href="#系统Crash" class="headerlink" title="系统Crash"></a>系统Crash</h3><p>对于系统Crash而引起的程序异常退出，可以通过UncaughtExceptionHandler机制捕获；也就是说在程序中catch以外的内容，被系统自带的错误处理而捕获。我们要做的就是用自定义的函数替代该ExceptionHandler即可。</p>
+<h3 id="处理signal"><a href="#处理signal" class="headerlink" title="处理signal"></a>处理signal</h3><p>使用Objective-C的异常处理是不能得到signal的，如果要处理它，我们还要利用unix标准的signal机制，<strong>注册SIGABRT, SIGBUS, SIGSEGV等信号发生时的处理函数</strong>。该函数中我们可以输出栈信息，版本信息等其他一切我们所想要的。</p>
+<p>下面是一些信号说明：</p>
+<p><strong>1) SIGHUP</strong><br>本信号在用户终端连接(正常或非正常)结束时发出, 通常是在终端的控制进程结束时, 通知同一session内的各个作业, 这时它们与控制终端不再关联。<br>登录Linux时，系统会分配给登录用户一个终端(Session)。在这个终端运行的所有程序，包括前台进程组和后台进程组，一般都属于这个 Session。当用户退出Linux登录时，前台进程组和后台有对终端输出的进程将会收到SIGHUP信号。这个信号的默认操作为终止进程，因此前台进 程组和后台有终端输出的进程就会中止。不过可以捕获这个信号，比如wget能捕获SIGHUP信号，并忽略它，这样就算退出了Linux登录， wget也 能继续下载。<br>此外，对于与终端脱离关系的守护进程，这个信号用于通知它重新读取配置文件。</p>
+<p><strong>2) SIGINT</strong><br>程序终止(interrupt)信号, 在用户键入INTR字符(通常是Ctrl-C)时发出，用于通知前台进程组终止进程。</p>
+<p><strong>3) SIGQUIT</strong><br>和SIGINT类似, 但由QUIT字符(通常是Ctrl-)来控制. 进程在因收到SIGQUIT退出时会产生core文件, 在这个意义上类似于一个程序错误信号。</p>
+<p><strong>4) SIGILL</strong><br>执行了非法指令. 通常是因为可执行文件本身出现错误, 或者试图执行数据段. 堆栈溢出时也有可能产生这个信号。</p>
+<p><strong>5) SIGTRAP</strong><br>由断点指令或其它trap指令产生. 由debugger使用。</p>
+<p><strong>6) SIGABRT</strong><br>调用abort函数生成的信号。</p>
+<p><strong>7) SIGBUS</strong><br>非法地址, 包括内存地址对齐(alignment)出错。比如访问一个四个字长的整数, 但其地址不是4的倍数。它与SIGSEGV的区别在于后者是由于对合法存储地址的非法访问触发的(如访问不属于自己存储空间或只读存储空间)。</p>
+<p><strong>8) SIGFPE</strong><br>在发生致命的算术运算错误时发出. 不仅包括浮点运算错误, 还包括溢出及除数为0等其它所有的算术的错误。</p>
+<p><strong>9) SIGKILL</strong><br>用来立即结束程序的运行. 本信号不能被阻塞、处理和忽略。如果管理员发现某个进程终止不了，可尝试发送这个信号。</p>
+<p><strong>10) SIGUSR1</strong><br>留给用户使用</p>
+<p><strong>11) SIGSEGV</strong><br>试图访问未分配给自己的内存, 或试图往没有写权限的内存地址写数据.</p>
+<p><strong>12) SIGUSR2</strong><br>留给用户使用</p>
+<p><strong>13) SIGPIPE</strong><br>管道破裂。这个信号通常在进程间通信产生，比如采用FIFO(管道)通信的两个进程，读管道没打开或者意外终止就往管道写，写进程会收到SIGPIPE信号。此外用Socket通信的两个进程，写进程在写Socket的时候，读进程已经终止。</p>
+<p><strong>14) SIGALRM</strong><br>时钟定时信号, 计算的是实际的时间或时钟时间. alarm函数使用该信号.</p>
+<p><strong>15) SIGTERM</strong><br>程序结束(terminate)信号, 与SIGKILL不同的是该信号可以被阻塞和处理。通常用来要求程序自己正常退出，shell命令kill缺省产生这个信号。如果进程终止不了，我们才会尝试SIGKILL。</p>
+<p><strong>17) SIGCHLD</strong><br>子进程结束时, 父进程会收到这个信号。<br>如果父进程没有处理这个信号，也没有等待(wait)子进程，子进程虽然终止，但是还会在内核进程表中占有表项，这时的子进程称为僵尸进程。这种情 况我们应该避免(父进程或者忽略SIGCHILD信号，或者捕捉它，或者wait它派生的子进程，或者父进程先终止，这时子进程的终止自动由init进程 来接管)。</p>
+<p><strong>18) SIGCONT</strong><br>让一个停止(stopped)的进程继续执行. 本信号不能被阻塞. 可以用一个handler来让程序在由stopped状态变为继续执行时完成特定的工作. 例如, 重新显示提示符</p>
+<p><strong>19) SIGSTOP</strong><br>停止(stopped)进程的执行. 注意它和terminate以及interrupt的区别:该进程还未结束, 只是暂停执行. 本信号不能被阻塞, 处理或忽略.</p>
+<p><strong>20) SIGTSTP</strong><br>停止进程的运行, 但该信号可以被处理和忽略. 用户键入SUSP字符时(通常是Ctrl-Z)发出这个信号</p>
+<p><strong>21) SIGTTIN</strong><br>当后台作业要从用户终端读数据时, 该作业中的所有进程会收到SIGTTIN信号. 缺省时这些进程会停止执行.</p>
+<p><strong>22) SIGTTOU</strong><br>类似于SIGTTIN, 但在写终端(或修改终端模式)时收到.</p>
+<p><strong>23) SIGURG</strong><br>有”紧急”数据或out-of-band数据到达socket时产生.</p>
+<p><strong>24) SIGXCPU</strong><br>超过CPU时间资源限制. 这个限制可以由getrlimit/setrlimit来读取/改变。</p>
+<p><strong>25) SIGXFSZ</strong><br>当进程企图扩大文件以至于超过文件大小资源限制。</p>
+<p><strong>26) SIGVTALRM</strong><br>虚拟时钟信号. 类似于SIGALRM, 但是计算的是该进程占用的CPU时间.</p>
+<p><strong>27) SIGPROF</strong><br>类似于SIGALRM/SIGVTALRM, 但包括该进程用的CPU时间以及系统调用的时间.</p>
+<p><strong>28) SIGWINCH</strong><br>窗口大小改变时发出.</p>
+<p><strong>29) SIGIO</strong><br>文件描述符准备就绪, 可以开始进行输入/输出操作.</p>
+<p><strong>30) SIGPWR</strong><br>Power failure</p>
+<p><strong>31) SIGSYS</strong><br>非法的系统调用。</p>
+<blockquote>
+<p><strong>Tip</strong></p>
+<p>在以上列出的信号中，程序不可捕获、阻塞或忽略的信号有：SIGKILL,SIGSTOP</p>
+<p>不能恢复至默认动作的信号有：SIGILL,SIGTRAP</p>
+<p>默认会导致进程流产的信号有：SIGABRT,SIGBUS,SIGFPE,SIGILL,SIGIOT,SIGQUIT,SIGSEGV,SIGTRAP,SIGXCPU,SIGXFSZ</p>
+<p>默认会导致进程退出的信号有:</p>
+<p>SIGALRM,SIGHUP,SIGINT,SIGKILL,SIGPIPE,SIGPOLL,SIGPROF,SIGSYS,SIGTERM,SIGUSR1,SIGUSR2,SIGVTALRM</p>
+<p>默认会导致进程停止的信号有：SIGSTOP,SIGTSTP,SIGTTIN,SIGTTOU</p>
+<p>默认进程忽略的信号有：SIGCHLD,SIGPWR,SIGURG,SIGWINCH</p>
+<p>此外，SIGIO在SVR4是退出，在4.3BSD中是忽略；SIGCONT在进程挂起时是继续，否则是忽略，不能被阻塞。</p>
+</blockquote>
+<h3 id="code"><a href="#code" class="headerlink" title="code"></a>code</h3><ul>
+<li>AppDelegate.m</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions &#123;</span><br><span class="line">// Override point for customization after application launch.</span><br><span class="line">    </span><br><span class="line">InstallSignalHandler();//信号量截断</span><br><span class="line">InstallUncaughtExceptionHandler();//系统异常捕获</span><br><span class="line">    </span><br><span class="line">return YES;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>SignalHandler.m</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SignalExceptionHandler</span><span class="params">(<span class="keyword">int</span> signal)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    NSMutableString *mstr = [[NSMutableString alloc] init];</span><br><span class="line">    [mstr appendString:@<span class="string">"Stack: "</span>];</span><br><span class="line">    <span class="keyword">void</span>* callstack[<span class="number">128</span>];</span><br><span class="line">    <span class="keyword">int</span> i, frames = backtrace(callstack, <span class="number">128</span>);</span><br><span class="line">    <span class="keyword">char</span>** strs = backtrace_symbols(callstack, frames);</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt;frames; ++i) &#123;</span><br><span class="line">        [mstr appendFormat:@<span class="string">"%s "</span>, strs[i]];</span><br><span class="line">    &#125;</span><br><span class="line">    [SignalHandler saveCreash:mstr];</span><br><span class="line"> </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">InstallSignalHandler</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    signal(SIGHUP, SignalExceptionHandler);</span><br><span class="line">    signal(SIGINT, SignalExceptionHandler);</span><br><span class="line">    signal(SIGQUIT, SignalExceptionHandler);</span><br><span class="line">    </span><br><span class="line">    signal(SIGABRT, SignalExceptionHandler);</span><br><span class="line">    signal(SIGILL, SignalExceptionHandler);</span><br><span class="line">    signal(SIGSEGV, SignalExceptionHandler);</span><br><span class="line">    signal(SIGFPE, SignalExceptionHandler);</span><br><span class="line">    signal(SIGBUS, SignalExceptionHandler);</span><br><span class="line">    signal(SIGPIPE, SignalExceptionHandler);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>UncaughtExceptionHandler.m</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">void HandleException(NSException *exception)</span><br><span class="line">&#123;</span><br><span class="line">    // 异常的堆栈信息</span><br><span class="line">    NSArray *stackArray = [exception callStackSymbols];</span><br><span class="line">    // 出现异常的原因</span><br><span class="line">    NSString *reason = [exception reason];</span><br><span class="line">    // 异常名称</span><br><span class="line">    NSString *name = [exception name];</span><br><span class="line">    NSString *exceptionInfo = [NSString stringWithFormat:@&quot;Exception reason：%@ Exception name：%@ Exception stack：%@&quot;,name, reason, stackArray];</span><br><span class="line">    NSLog(@&quot;%@&quot;, exceptionInfo);</span><br><span class="line">    [UncaughtExceptionHandler saveCreash:exceptionInfo];</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">void InstallUncaughtExceptionHandler(void)</span><br><span class="line">&#123;</span><br><span class="line">    NSSetUncaughtExceptionHandler(&amp;HandleException);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>SignalHandler不要在debug环境下测试。因为系统的debug会优先去拦截。我们要运行一次后，关闭debug状态。应该直接在模拟器上点击我们build上去的app去运行。而UncaughtExceptionHandler可以在调试状态下捕捉</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (void)buttonClick:(UIButton *)sender &#123;</span><br><span class="line">//1.信号量</span><br><span class="line">    Test *pTest = &#123;1,2&#125;;</span><br><span class="line">    free(pTest);//导致SIGABRT的错误，因为内存中根本就没有这个空间，哪来的free，就在栈中的对象而已</span><br><span class="line">    pTest-&gt;a = 5;</span><br><span class="line">&#125;</span><br><span class="line">- (IBAction)buttonOCException:(UIButton *)sender</span><br><span class="line">&#123;</span><br><span class="line">    //2.ios崩溃</span><br><span class="line">    NSArray *array= @[@&quot;tom&quot;,@&quot;xxx&quot;,@&quot;ooo&quot;];</span><br><span class="line">    [array objectAtIndex:5];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>招摇撞骗</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://raw.githubusercontent.com/objChen/StaticResources/master/wechatqrcode.jpg" alt="chen peng 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/crash捕获/" rel="tag"># crash捕获</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/20/聊聊iOS中的PromiseKit/" rel="prev" title="聊聊iOS中的PromiseKit">
+                聊聊iOS中的PromiseKit <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://raw.githubusercontent.com/objChen/StaticResources/master/nextAvatar.jpg"
+                alt="chen peng" />
+            
+              <p class="site-author-name" itemprop="name">chen peng</p>
+              <p class="site-description motion-element" itemprop="description">一个改变不了世界只能改变自己的iOSer</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:objcchen@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#系统Crash"><span class="nav-number">1.</span> <span class="nav-text">系统Crash</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#处理signal"><span class="nav-number">2.</span> <span class="nav-text">处理signal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#code"><span class="nav-number">3.</span> <span class="nav-text">code</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2014 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chen peng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
