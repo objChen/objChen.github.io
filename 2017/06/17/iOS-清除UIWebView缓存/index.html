@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="ios,oc,swift,js,rn,reactnative,chenpeng,objcchen,objchen,blog,Hexo,NexT" />
+  <meta name="keywords" content="iOS," />
 
 
 
@@ -79,19 +79,18 @@
 
 
 
-<meta name="description" content="E-mail：objcchen@gmail.com QQ：229007474 Wechat：Tel-13262652235 招摇撞骗">
-<meta property="og:type" content="website">
-<meta property="og:title" content="关于">
-<meta property="og:url" content="http://objchen.cn/about/index.html">
+<meta name="description" content="清除webview cookies&amp;amp;缓存  //清除cookies 12345NSHTTPCookie *cookie;NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];for (cookie in [storage cookies])&amp;#123;	[storage deleteCoo">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 清除UIWebView缓存">
+<meta property="og:url" content="http://objchen.cn/2017/06/17/iOS-清除UIWebView缓存/index.html">
 <meta property="og:site_name" content="objChen">
-<meta property="og:description" content="E-mail：objcchen@gmail.com QQ：229007474 Wechat：Tel-13262652235 招摇撞骗">
+<meta property="og:description" content="清除webview cookies&amp;amp;缓存  //清除cookies 12345NSHTTPCookie *cookie;NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];for (cookie in [storage cookies])&amp;#123;	[storage deleteCoo">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://raw.githubusercontent.com/objChen/StaticResources/master/wechatqrcode.jpg">
-<meta property="og:updated_time" content="2018-08-18T09:04:31.986Z">
+<meta property="og:updated_time" content="2018-08-18T10:32:17.093Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="关于">
-<meta name="twitter:description" content="E-mail：objcchen@gmail.com QQ：229007474 Wechat：Tel-13262652235 招摇撞骗">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/objChen/StaticResources/master/wechatqrcode.jpg">
+<meta name="twitter:title" content="iOS 清除UIWebView缓存">
+<meta name="twitter:description" content="清除webview cookies&amp;amp;缓存  //清除cookies 12345NSHTTPCookie *cookie;NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];for (cookie in [storage cookies])&amp;#123;	[storage deleteCoo">
 
 
 
@@ -121,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://objchen.cn/about/"/>
+  <link rel="canonical" href="http://objchen.cn/2017/06/17/iOS-清除UIWebView缓存/"/>
 
 
 
 
 
-  <title>关于 | objChen</title>
+  <title>iOS 清除UIWebView缓存 | objChen</title>
   
 
 
@@ -232,37 +231,178 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2017/06/17/iOS-清除UIWebView缓存/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chen peng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/objChen/StaticResources/master/nextAvatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="objChen">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h1 class="post-title" itemprop="name headline">关于</h1>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <p>E-mail：<a href="mailto:objcchen@gmail.com" target="_blank" rel="noopener">objcchen@gmail.com</a></p>
-<p>QQ：229007474</p>
-<p>Wechat：Tel-13262652235</p>
-<h3 id="招摇撞骗"><a href="#招摇撞骗" class="headerlink" title="招摇撞骗"></a>招摇撞骗</h3><p><img src="https://raw.githubusercontent.com/objChen/StaticResources/master/wechatqrcode.jpg" alt="wechatqrcode"></p>
-
+          <h1 class="post-title" itemprop="name headline">iOS 清除UIWebView缓存</h1>
         
-      </div>
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-17T20:40:45+08:00">
+                2017-06-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <blockquote>
+<p>清除webview cookies&amp;缓存</p>
+</blockquote>
+<p>//清除cookies</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">NSHTTPCookie *cookie;</span><br><span class="line">NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];</span><br><span class="line">for (cookie in [storage cookies])&#123;</span><br><span class="line">	[storage deleteCookie:cookie];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>//    清除webView的缓存</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- (void)cleanCache&#123;</span><br><span class="line">//清除UIWebView的缓存</span><br><span class="line">NSURLCache *cache = [NSURLCache sharedURLCache];</span><br><span class="line">	[cache removeAllCachedResponses];</span><br><span class="line">	[cache setDiskCapacity:0];</span><br><span class="line">	[cache setMemoryCapacity:0];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
       
     </div>
     
     
     
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>招摇撞骗</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://raw.githubusercontent.com/objChen/StaticResources/master/wechatqrcode.jpg" alt="chen peng 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/06/iOS-唯一标识/" rel="next" title="iOS 唯一标识">
+                <i class="fa fa-chevron-left"></i> iOS 唯一标识
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/30/iOS-再谈TableView性能优化/" rel="prev" title="iOS 再谈TableView性能优化">
+                iOS 再谈TableView性能优化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -295,17 +435,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -370,22 +501,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#招摇撞骗"><span class="nav-number">1.</span> <span class="nav-text">招摇撞骗</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
