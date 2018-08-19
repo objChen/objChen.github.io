@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Swift的属性与Objective-C中的属性是一样的，不同的是Swift细化了属性的类型，另外除了类之外，结构体和枚举也可以有属性。 Swift中有这么几种属性：  存储属性(Stored properties)：存储实例的常量和变量，与类、结构体、枚举的实例相关 计算属性(Computed properties)：通过某种方式计算出来的属性，只与类、结构体的实例相关，枚举没有计算属性 类型属">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift中的Property">
+<meta property="og:url" content="http://objchen.cn/2016/07/02/Swift中的Property/index.html">
+<meta property="og:site_name" content="objChen">
+<meta property="og:description" content="Swift的属性与Objective-C中的属性是一样的，不同的是Swift细化了属性的类型，另外除了类之外，结构体和枚举也可以有属性。 Swift中有这么几种属性：  存储属性(Stored properties)：存储实例的常量和变量，与类、结构体、枚举的实例相关 计算属性(Computed properties)：通过某种方式计算出来的属性，只与类、结构体的实例相关，枚举没有计算属性 类型属">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-19T14:43:02.054Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Swift中的Property">
+<meta name="twitter:description" content="Swift的属性与Objective-C中的属性是一样的，不同的是Swift细化了属性的类型，另外除了类之外，结构体和枚举也可以有属性。 Swift中有这么几种属性：  存储属性(Stored properties)：存储实例的常量和变量，与类、结构体、枚举的实例相关 计算属性(Computed properties)：通过某种方式计算出来的属性，只与类、结构体的实例相关，枚举没有计算属性 类型属">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://objchen.cn/2016/07/02/Swift中的Property/"/>
+
+
+
+
+
+  <title>Swift中的Property | objChen</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">objChen</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">一直在追求如何更有效率的开展工作</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-about"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2016/07/02/Swift中的Property/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chen peng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/objChen/StaticResources/master/nextAvatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="objChen">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Swift中的Property</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-02T00:00:18+08:00">
+                2016-07-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Swift的属性与Objective-C中的属性是一样的，不同的是Swift细化了属性的类型，另外除了类之外，结构体和枚举也可以有属性。</p>
+<p>Swift中有这么几种属性：</p>
+<ol>
+<li>存储属性(Stored properties)：存储实例的常量和变量，与类、结构体、枚举的实例相关</li>
+<li>计算属性(Computed properties)：通过某种方式计算出来的属性，只与类、结构体的实例相关，枚举没有计算属性</li>
+<li>类型属性(type properties)：与类型自身相关。</li>
+</ol>
+<p>另外，我们可以定义属性观察者来监听属性值的改变，以执行一些额外的操作。属性观察者可以添加到自定义的存储属性上，也可以添加到父类继承而来的属性上。</p>
+<p>下面我们将详细介绍这些属性</p>
+<h2 id="存储属性"><a href="#存储属性" class="headerlink" title="存储属性"></a>存储属性</h2><p>存储属性是最简单的属性，它作为类或结构体实例的一部分，用于存储常量和变量。</p>
+<p>关于存储属性，有以下几点：</p>
+<ol>
+<li>我们可以给存储属性提供一个默认值，也可以在初始化方法中对其进行初始化，即使是常量型属性，也可以这样做。</li>
+<li>如果创建一个常量结构体实例，我们不能修改该实例的变量型存储属性。这是因为结构体是值类型，当一个值类型的实例标记为常量时，它的所有属性也是常量。由于类是引用类型，所以该条不适用于类类型。</li>
+<li>如果我们希望属性在使用到的时候再初始化，则可以使用懒惰存储属性(lazy stored property，使用修饰符@lazy)。懒惰存储属性总是应该定义为变量，因为常量型属性总需要在初始化方法完成之前初始化。</li>
+<li>与Objective-C不同的是，Swift中的属性不需要一个与之对应的成员变量，我们不能直接访问属性的后备存储(backing store)。这种方式避免了混淆不同上下文环境下对值的访问，并将属性简化为单一、明确的声明。</li>
+</ol>
+<p><strong>代码清单1</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">struct FixedLengthRange &#123;</span><br><span class="line">    var firstValue:Int      // 变量存储属性</span><br><span class="line">    let length:Int          // 常量存储属性</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line">var item1 = FixedLengthRange(firstValue: 10, length: 10)</span><br><span class="line">	</span><br><span class="line">let item2 = FixedLengthRange(firstValue: 10, length: 10)</span><br><span class="line">//item2.firstValue = 6        // 错误：不能修改常量结构体实例的存储属性</span><br></pre></td></tr></table></figure>
+<h2 id="计算属性"><a href="#计算属性" class="headerlink" title="计算属性"></a>计算属性</h2><p>计算属性并不存储实际的值，而是提供一个getter和一个可选的setter来间接获取和设置其它属性。</p>
+<p>关于计算属性，有以下几点：</p>
+<ol>
+<li>如果计算属性的setter没有定义一个新值的变量名，则默认为newValue</li>
+<li>如果只提供getter，而不提供setter，则该计算属性为只读属性</li>
+<li>我们只能声明变量型只读属性，因为它们的值不是固定的</li>
+<li>如果计算属性是只读的，则可以不使用get{}</li>
+</ol>
+<p>计算属性的实例如代码清单2：</p>
+<p><strong>代码清单2</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">struct Point &#123;</span><br><span class="line">    var x = 0.0, y = 0.0</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line">struct Size &#123;</span><br><span class="line">    var width = 0.0, height = 0.0</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line">struct Rect &#123;</span><br><span class="line">    var origin = Point()</span><br><span class="line">    var size = Size()</span><br><span class="line">    </span><br><span class="line">    var center:Point &#123;          // 计算属性</span><br><span class="line">	    get &#123;</span><br><span class="line">	        let centerX = origin.x + (size.width / 2)</span><br><span class="line">	        let centerY = origin.y + (size.height / 2)</span><br><span class="line">	        return Point(x: centerX, y: centerY)</span><br><span class="line">	    &#125;</span><br><span class="line">	    set(newCenter) &#123;            // 若不提供新值变量名，则默认为newValue</span><br><span class="line">	        origin.x = newCenter.x - size.width / 2</span><br><span class="line">	        origin.y = newCenter.y - size.height / 2</span><br><span class="line">	    &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    var maxX:Float &#123;        // 只读属性，省略get&#123;&#125;</span><br><span class="line">        return Float(origin.x) + Float(size.width)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line">var square = Rect(origin:Point(x: 0.0, y: 0.0), size:Size(width:100, height:100))</span><br><span class="line">	</span><br><span class="line">let initialSquareCenter = square.center</span><br><span class="line">square.center = Point(x: 15.0, y:15.0)</span><br><span class="line">square.maxX</span><br></pre></td></tr></table></figure>
+<h2 id="类型属性"><a href="#类型属性" class="headerlink" title="类型属性"></a>类型属性</h2><p>类型属性是与类型相关联的，而不是与类型的实例相关联。对于某一类型的所有实例，类型属性都只有一份拷贝。对于值类型，我们可以定义存储类型属性和计算类型属性。对于类，我们只能定义计算类型属性。和实例属性不同的是，我们总是需要给存储类型属性一个默认值。这是因为类型没有初始化方法来初始化类型属性。</p>
+<p>类型属性的访问和设置与实例属性一样，不一样的是，类型属性通过类型来获取和设置，而不是类型的实例</p>
+<p><strong>代码清单3</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">struct AudioChannel &#123;</span><br><span class="line">    static let threaholdLevel = 10</span><br><span class="line">    static var maxInputLevelForAllChannels = 0</span><br><span class="line">    </span><br><span class="line">    var currentLevel:Int = 0 &#123;</span><br><span class="line">	    didSet&#123;</span><br><span class="line">	        if currentLevel &gt; AudioChannel.threaholdLevel &#123;</span><br><span class="line">	            currentLevel = AudioChannel.threaholdLevel</span><br><span class="line">	        &#125;</span><br><span class="line">	        </span><br><span class="line">	        if currentLevel &gt; AudioChannel.maxInputLevelForAllChannels &#123;</span><br><span class="line">	            AudioChannel.maxInputLevelForAllChannels = currentLevel</span><br><span class="line">	        &#125;</span><br><span class="line">	    &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line">var leftChannel = AudioChannel()</span><br><span class="line">var rightChannel = AudioChannel()</span><br><span class="line">	</span><br><span class="line">leftChannel.currentLevel = 7</span><br><span class="line">	</span><br><span class="line">println(leftChannel.currentLevel)       // 7</span><br><span class="line">println(AudioChannel.maxInputLevelForAllChannels)   // 7</span><br><span class="line">	</span><br><span class="line">rightChannel.currentLevel = 11</span><br><span class="line">println(rightChannel.currentLevel)      // 10</span><br><span class="line">println(AudioChannel.maxInputLevelForAllChannels)   // 10</span><br></pre></td></tr></table></figure>
+<h2 id="属性观察者"><a href="#属性观察者" class="headerlink" title="属性观察者"></a>属性观察者</h2><p>属性观察者用于监听和响应属性值的变化。在每次设置属性值的时候都会调用属性观察者方法，即使新旧值是一样的。我们可以为任何存储属性定义属性观察者，除了懒惰存储属性。我们同样可以在子类中给继承而来的属性添加观察者。</p>
+<p>对于计算属性，我们不需要定义属性观察者，因为我们可以在计算属性的setter中直接观察并响应这种值的变化。</p>
+<p>我们通过设置以下观察方法来定义观察者</p>
+<ol>
+<li>willSet：在属性值被存储之前设置。此时新属性值作为一个常量参数被传入。该参数名默认为newValue，我们可以自己定义该参数名</li>
+<li>didSet：在新属性值被存储后立即调用。与willSet相同，此时传入的是属性的旧值，默认参数名为oldValue。</li>
+</ol>
+<p>willSet与didSet只有在属性第一次被设置时才会调用，在初始化时，不会去调用这些监听方法。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>招摇撞骗</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://raw.githubusercontent.com/objChen/StaticResources/master/wechatqrcode.jpg" alt="chen peng 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/28/Swift-OC-混编/" rel="next" title="Swift & OC 混编">
+                <i class="fa fa-chevron-left"></i> Swift & OC 混编
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/07/Swift中的Protocol/" rel="prev" title="Swift中的Protocol">
+                Swift中的Protocol <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://raw.githubusercontent.com/objChen/StaticResources/master/nextAvatar.jpg"
+                alt="chen peng" />
+            
+              <p class="site-author-name" itemprop="name">chen peng</p>
+              <p class="site-description motion-element" itemprop="description">一个改变不了世界只能改变自己的iOSer</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:objcchen@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#存储属性"><span class="nav-number">1.</span> <span class="nav-text">存储属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计算属性"><span class="nav-number">2.</span> <span class="nav-text">计算属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类型属性"><span class="nav-number">3.</span> <span class="nav-text">类型属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#属性观察者"><span class="nav-number">4.</span> <span class="nav-text">属性观察者</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2014 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chen peng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
