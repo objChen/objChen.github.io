@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="JS交互 Cookie传递," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="介绍iOS中的WebView，并且由浅到深，一步步带你了解并掌握WebView的用法，JavaScript与Objective的交互，以及Cookie的管理、js的调试等。  UIWebViewUIWebView基本用法首先要介绍的就是我们的老朋友UIWebView。相信对大多数小伙伴儿而言，UIWebView和UILabel一样，都是最早接触的控件了，其实UIWebView用法比较简单（功能基">
+<meta name="keywords" content="JS交互 Cookie传递">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS WebView的JS交互&amp;Cookie管理">
+<meta property="og:url" content="http://objchen.cn/2017/04/24/iOS-WebView的JS交互-Cookie管理/index.html">
+<meta property="og:site_name" content="objChen">
+<meta property="og:description" content="介绍iOS中的WebView，并且由浅到深，一步步带你了解并掌握WebView的用法，JavaScript与Objective的交互，以及Cookie的管理、js的调试等。  UIWebViewUIWebView基本用法首先要介绍的就是我们的老朋友UIWebView。相信对大多数小伙伴儿而言，UIWebView和UILabel一样，都是最早接触的控件了，其实UIWebView用法比较简单（功能基">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-18T09:44:13.309Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS WebView的JS交互&amp;Cookie管理">
+<meta name="twitter:description" content="介绍iOS中的WebView，并且由浅到深，一步步带你了解并掌握WebView的用法，JavaScript与Objective的交互，以及Cookie的管理、js的调试等。  UIWebViewUIWebView基本用法首先要介绍的就是我们的老朋友UIWebView。相信对大多数小伙伴儿而言，UIWebView和UILabel一样，都是最早接触的控件了，其实UIWebView用法比较简单（功能基">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://objchen.cn/2017/04/24/iOS-WebView的JS交互-Cookie管理/"/>
+
+
+
+
+
+  <title>iOS WebView的JS交互&Cookie管理 | objChen</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">objChen</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">一直在追求如何更有效率的开展工作</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-about"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2017/04/24/iOS-WebView的JS交互-Cookie管理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chen peng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/objChen/StaticResources/master/nextAvatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="objChen">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS WebView的JS交互&Cookie管理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-24T23:35:42+08:00">
+                2017-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>介绍iOS中的WebView，并且由浅到深，一步步带你了解并掌握WebView的用法，JavaScript与Objective的交互，以及Cookie的管理、js的调试等。</p>
+</blockquote>
+<h1 id="UIWebView"><a href="#UIWebView" class="headerlink" title="UIWebView"></a>UIWebView</h1><h2 id="UIWebView基本用法"><a href="#UIWebView基本用法" class="headerlink" title="UIWebView基本用法"></a>UIWebView基本用法</h2><p>首先要介绍的就是我们的老朋友<code>UIWebView</code>。相信对大多数小伙伴儿而言，<code>UIWebView</code>和<code>UILabel</code>一样，都是最早接触的控件了，其实<code>UIWebView</code>用法比较简单（功能基本能满足需求），简单的创建，并且调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (void)loadRequest:(NSURLRequest *)request;</span><br><span class="line">- (void)loadHTMLString:(NSString *)string baseURL:(nullable NSURL *)baseURL;</span><br><span class="line">- (void)loadData:(NSData *)data MIMEType:(NSString *)MIMEType textEncodingName:(NSString *)textEncodingName baseURL:(NSURL *)baseURL;</span><br></pre></td></tr></table></figure>
+<p>这些方法，加载就可以了。<br>当然，如果需要监听页面加载的结果，或者需要判断是否允许打开某个URL，那需要设置<code>UIWebView</code>的<code>delegate</code>，代理只需要遵循<code>&lt;UIWebViewDelegate&gt;</code>协议，并且在代理中实现下面的这些可选方法就可以：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">__TVOS_PROHIBITED @protocol UIWebViewDelegate &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@optional</span><br><span class="line">- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType;</span><br><span class="line">- (void)webViewDidStartLoad:(UIWebView *)webView;</span><br><span class="line">- (void)webViewDidFinishLoad:(UIWebView *)webView;</span><br><span class="line">- (void)webView:(UIWebView *)webView didFailLoadWithError:(nullable NSError *)error;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<h2 id="UIWebView中JavaScript与Objective的交互"><a href="#UIWebView中JavaScript与Objective的交互" class="headerlink" title="UIWebView中JavaScript与Objective的交互"></a>UIWebView中JavaScript与Objective的交互</h2><p>这里不详细讨论一些很好的第三方实现，比如<a href="https://link.jianshu.com?t=https://github.com/marcuswestin/WebViewJavascriptBridge" target="_blank" rel="noopener">WebViewJavascriptBridge</a>，单纯的讲讲native端JS与OC的交互实现方式，读完了下面的部分，相信你也会实现一个简单的<code>bridge</code>了。</p>
+<h3 id="UIWebView-OC调用JS"><a href="#UIWebView-OC调用JS" class="headerlink" title="UIWebView OC调用JS"></a>UIWebView OC调用JS</h3><h4 id="1-stringByEvaluatingJavaScriptFromString"><a href="#1-stringByEvaluatingJavaScriptFromString" class="headerlink" title="1. stringByEvaluatingJavaScriptFromString:"></a>1. stringByEvaluatingJavaScriptFromString:</h4><p>最常用的方法，很简单，只要调用<code>- (nullable NSString *)stringByEvaluatingJavaScriptFromString:(NSString *)script;</code>就可以了，如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.navigationItem.title = [webView stringByEvaluatingJavaScriptFromString:@&quot;document.title&quot;];</span><br></pre></td></tr></table></figure>
+<p>虽然比较方便，但是缺点也有：</p>
+<ol>
+<li>该方法不能判断调用了一个js方法之后，是否发生了错误。当错误发生时，返回值为nil，而当调用一个方法本身没有返回值时，返回值也为nil，所以无法判断是否调用成功了。</li>
+<li>返回值类型为<code>nullable NSString *</code>，就意味着当调用的js方法有返回值时，都以字符串返回，不够灵活。当返回值是一个js的Array时，还需要解析字符串，比较麻烦。</li>
+</ol>
+<p>对于上述缺点，可以通过使用JavaScriptCore（iOS 7.0 +）来解决。</p>
+<h4 id="2-JavaScriptCore（iOS-7-0-）"><a href="#2-JavaScriptCore（iOS-7-0-）" class="headerlink" title="2. JavaScriptCore（iOS 7.0 +）"></a>2. JavaScriptCore（iOS 7.0 +）</h4><p>想必大家不会陌生吧，前些日子弄的沸沸扬扬的<code>JSPatch</code>被禁事件中，最核心的就是它了。因为<code>JavaScriptCore</code>的JS到OC的映射，可以替换各种js方法成oc方法，所以其<strong>动态性（配合runtime的不安全性）</strong>也就成为了<code>JSPatch</code>被<strong>Apple</strong>禁掉的最主要原因。这里讲下<code>UIWebView</code>通过<code>JavaScriptCore</code>来实现OC-&gt;JS。</p>
+<p>其实WebKit都有一个内嵌的js环境，一般我们在页面加载完成之后，获取js上下文，然后通过<code>JSContext</code>的<code>evaluateScript:</code>方法来获取返回值。因为该方法得到的是一个<code>JSValue</code>对象，所以支持JavaScript的Array、Number、String、对象等数据类型。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (void)webViewDidFinishLoad:(UIWebView *)webView</span><br><span class="line">&#123;</span><br><span class="line">    //更新标题，这是上面的讲过的方法</span><br><span class="line">    //self.navigationItem.title = [webView stringByEvaluatingJavaScriptFromString:@&quot;document.title&quot;];</span><br><span class="line">    </span><br><span class="line">    //获取该UIWebView的javascript上下文</span><br><span class="line">    JSContext *jsContext = [self.webView valueForKeyPath:@&quot;documentView.webView.mainFrame.javaScriptContext&quot;];</span><br><span class="line">    </span><br><span class="line">    //这也是一种获取标题的方法。</span><br><span class="line">    JSValue *value = [self.jsContext evaluateScript:@&quot;document.title&quot;];</span><br><span class="line">    //更新标题</span><br><span class="line">    self.navigationItem.title = value.toString;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该方法解决了<code>stringByEvaluatingJavaScriptFromString:</code>返回值只是<code>NSString</code>的问题。</p>
+<p>那么如果我执行了一个不存在的方法，比如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[self.jsContext evaluateScript:@&quot;document.titlexxxx&quot;];</span><br></pre></td></tr></table></figure>
+<p>那么必然会报错，报错了，可以通过<code>@property (copy) void(^exceptionHandler)(JSContext *context, JSValue *exception);</code>，设置该block来获取异常。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//在调用前，设置异常回调</span><br><span class="line">[self.jsContext setExceptionHandler:^(JSContext *context, JSValue *exception)&#123;</span><br><span class="line">        NSLog(@&quot;%@&quot;, exception);</span><br><span class="line">&#125;];</span><br><span class="line">//执行方法</span><br><span class="line">JSValue *value = [self.jsContext evaluateScript:@&quot;document.titlexxxx&quot;];</span><br></pre></td></tr></table></figure>
+<p>该方法，也很好的解决了<code>stringByEvaluatingJavaScriptFromString:</code>调用js方法后，出现错误却捕获不到的缺点。</p>
+<h3 id="UIWebView-JS调用OC"><a href="#UIWebView-JS调用OC" class="headerlink" title="UIWebView JS调用OC"></a>UIWebView JS调用OC</h3><h4 id="1-Custom-URL-Scheme（拦截URL）"><a href="#1-Custom-URL-Scheme（拦截URL）" class="headerlink" title="1. Custom URL Scheme（拦截URL）"></a>1. Custom URL Scheme（拦截URL）</h4><p>比如<code>darkangel://</code>。方法是在html或者js中，点击某个按钮触发事件时，跳转到自定义URL Scheme构成的链接，而Objective-C中捕获该链接，从中解析必要的参数，实现JS到OC的一次交互。比如页面中一个a标签，链接如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;a href=&quot;darkangel://smsLogin?username=12323123&amp;code=892845&quot;&gt;短信验证登录&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+<p>而在Objective-C中，只要遵循了<code>UIWebViewDelegate</code>协议，那么每次打开一个链接之前，都会触发方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType；</span><br></pre></td></tr></table></figure>
+<p>在该方法中，捕获该链接，并且返回NO（<strong>阻止本次跳转</strong>），从而执行对应的OC方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType</span><br><span class="line">&#123;</span><br><span class="line">    //标准的URL包含scheme、host、port、path、query、fragment等</span><br><span class="line">    NSURL *URL = request.URL;    </span><br><span class="line">    if ([URL.scheme isEqualToString:@&quot;darkangel&quot;]) &#123;</span><br><span class="line">        if ([URL.host isEqualToString:@&quot;smsLogin&quot;]) &#123;</span><br><span class="line">            NSLog(@&quot;短信验证码登录，参数为 %@&quot;, URL.query);</span><br><span class="line">            return NO;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当用户点击<strong>短信验证登录</strong>时，控制台会输出<code>短信验证码登录，参数为 username=12323123&amp;code=892845</code>。参数可以是一个json格式并且URLEncode过的字符串，这样就可以实现复杂参数的传递（比如<a href="https://link.jianshu.com?t=https://github.com/marcuswestin/WebViewJavascriptBridge" target="_blank" rel="noopener">WebViewJavascriptBridge</a>）。</p>
+<p><strong>优点</strong>：泛用性强，可以配合h5实现页面动态化。比如页面中一个活动链接到活动详情页，当native尚未开发完毕时，链接可以是一个h5链接，等到native开发完毕时，可以通过该方法跳转到native页面，实现页面动态化。且该方案适用于Android和iOS，泛用性很强。</p>
+<p><strong>缺点</strong>：无法直接获取本次交互的返回值，比较适合单向传参，且不关心回调的情景，比如h5页面跳转到native页面等。</p>
+<p>其实，<a href="https://link.jianshu.com?t=https://github.com/marcuswestin/WebViewJavascriptBridge" target="_blank" rel="noopener">WebViewJavascriptBridge</a>使用的方案就是<strong>拦截URL</strong>，为了解决无法直接获取返回值的缺点，它采用了将一个名为<code>callback</code>的<code>function</code>作为参数，通过一些封装，传递到OC（<strong>js-&gt;oc</strong> 传递参数和callbackId），然后在OC端执行完毕，再通过<code>block</code>来回调callback（<strong>oc-&gt;js</strong>，传递返回值参数），实现异步获取返回值，比如在js端调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//JS调用OC的分享方法（当然需要OC提前注册）share为方法名，shareData为参数，后面的为回调function</span><br><span class="line">WebViewJavascriptBridge.callHandler(&apos;share&apos;, shareData, function(response) &#123;</span><br><span class="line">   //OC端通过block回调分享成功或者失败的结果</span><br><span class="line">   alert(response);   </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>具体的可以看下它的源码，还是很值得学习的。</p>
+<h4 id="2-JavaScriptCore（iOS-7-0-）-1"><a href="#2-JavaScriptCore（iOS-7-0-）-1" class="headerlink" title="2. JavaScriptCore（iOS 7.0 +）"></a>2. JavaScriptCore（iOS 7.0 +）</h4><p>除了<strong>拦截URL</strong>的方法，还可以利用上面提到的<code>JavaScriptCore</code>。它十分强大，强大在哪里呢？下面我们来一探究竟。</p>
+<p>当然，还是需要在页面加载完成时，先获取js上下文。获取到之后，我们就可以进行强大的方法映射了。</p>
+<p>比如js中我定义了一个分享的方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function share(title, imgUrl, link) &#123;</span><br><span class="line">     //这里需要OC实现</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在OC中实现如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">- (void)webViewDidFinishLoad:(UIWebView *)webView</span><br><span class="line">&#123;</span><br><span class="line">    //将js的function映射到OC的方法</span><br><span class="line">    [self convertJSFunctionsToOCMethods];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)convertJSFunctionsToOCMethods</span><br><span class="line">&#123;</span><br><span class="line">    //获取该UIWebview的javascript上下文</span><br><span class="line">    //self持有jsContext</span><br><span class="line">    //@property (nonatomic, strong) JSContext *jsContext;</span><br><span class="line">    self.jsContext = [self.webView valueForKeyPath:@&quot;documentView.webView.mainFrame.javaScriptContext&quot;];</span><br><span class="line">    </span><br><span class="line">    //js调用oc</span><br><span class="line">    //其中share就是js的方法名称，赋给是一个block 里面是oc代码</span><br><span class="line">    //此方法最终将打印出所有接收到的参数，js参数是不固定的</span><br><span class="line">    self.jsContext[@&quot;share&quot;] = ^() &#123;</span><br><span class="line">        NSArray *args = [JSContext currentArguments];//获取到share里的所有参数</span><br><span class="line">        //args中的元素是JSValue，需要转成OC的对象</span><br><span class="line">        NSMutableArray *messages = [NSMutableArray array];</span><br><span class="line">        for (JSValue *obj in args) &#123;</span><br><span class="line">            [messages addObject:[obj toObject]];</span><br><span class="line">        &#125;</span><br><span class="line">        NSLog(@&quot;点击分享js传回的参数：\n%@&quot;, messages);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在html或者js的某处，点击a标签调用这个share方法，并传参，如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;a href=&quot;javascript:void(0);&quot; class=&quot;sharebtn&quot; onclick=&quot;share(&apos;分享标题&apos;, &apos;http://cc.cocimg.com/api/uploads/170425/b2d6e7ea5b3172e6c39120b7bfd662fb.jpg&apos;, location.href)&quot;&gt;分享活动，领30元红包&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+<p>此时，如果用户点击了分享活动，领30元红包这个标签，那么在控制台会打印出所有参数</p>
+<p>上面的代码实现了OC方法替换JS实现。它十分灵活，主要依赖这些Api。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@interface JSContext (SubscriptSupport)</span><br><span class="line">/*!</span><br><span class="line">@method</span><br><span class="line">@abstract Get a particular property on the global object.</span><br><span class="line">@result The JSValue for the global object&apos;s property.</span><br><span class="line">*/</span><br><span class="line">- (JSValue *)objectForKeyedSubscript:(id)key;</span><br><span class="line">/*!</span><br><span class="line">@method</span><br><span class="line">@abstract Set a particular property on the global object.</span><br><span class="line">*/</span><br><span class="line">- (void)setObject:(id)object forKeyedSubscript:(NSObject &lt;NSCopying&gt; *)key;</span><br></pre></td></tr></table></figure>
+<p><code>self.jsContext[@&quot;yourMethodName&quot;] = your block;</code>这样写不仅可以在有<code>yourMethodName</code>方法时替换该JS方法为OC实现，还会在该方法没有时，添加方法。简而言之，<strong>有则替换，无则添加</strong>。</p>
+<p>那如果我想写一个有两个参数，一个返回值的js方法，oc应该怎么替换呢？</p>
+<p>js中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//该方法传入两个整数，求和，并返回结果</span><br><span class="line">function testAddMethod(a, b) &#123;</span><br><span class="line">    //需要OC实现a+b，并返回</span><br><span class="line">    return a + b;</span><br><span class="line">&#125;</span><br><span class="line">//js调用</span><br><span class="line">console.log(testAddMethod(1, 5));   //output  6</span><br></pre></td></tr></table></figure>
+<p>oc直接替换该方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">self.jsContext[@&quot;testAddMethod&quot;] = ^NSInteger(NSInteger a, NSInteger b) &#123;</span><br><span class="line">      return a + b;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>那么当在js调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//js调用</span><br><span class="line">console.log(testAddMethod(1, 5));   //output  6， 方法为 a + b</span><br></pre></td></tr></table></figure>
+<p>如果oc替换该方法为两数相乘</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">self.jsContext[@&quot;testAddMethod&quot;] = ^NSInteger(NSInteger a, NSInteger b) &#123;</span><br><span class="line">      return a * b;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>再次调用js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log(testAddMethod(1, 5));   //output  5，该方法变为了 a * b。</span><br></pre></td></tr></table></figure>
+<p>举一反三，调用方法原实现，并且在原结果上乘以10。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//调用方法的本来实现，给原结果乘以10</span><br><span class="line">JSValue *value = self.jsContext[@&quot;testAddMethod&quot;];</span><br><span class="line">self.jsContext[@&quot;testAddMethod&quot;] = ^NSInteger(NSInteger a, NSInteger b) &#123;</span><br><span class="line">    JSValue *resultValue = [value callWithArguments:[JSContext currentArguments]];</span><br><span class="line">    return resultValue.toInt32 * 10;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>再次调用js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log(testAddMethod(1, 5));   //output  60，该方法变为了(a + b) * 10</span><br></pre></td></tr></table></figure>
+<p>上面的方法，都是同步函数，如果我想实现JS调用OC的方法，并且异步接收回调，那么该怎么做呢？比如h5中有一个分享按钮，用户点击之后，调用native分享（微信分享、微博分享等），在native分享成功或者失败时，回调h5页面，告诉其分享结果，h5页面刷新对应的UI，显示分享成功或者失败。</p>
+<p>这个问题，需要对js有一定了解。下面上js代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">//声明</span><br><span class="line">function share(shareData) &#123;</span><br><span class="line">    var title = shareData.title;</span><br><span class="line">    var imgUrl = shareData.imgUrl;</span><br><span class="line">    var link = shareData.link;</span><br><span class="line">    var result = shareData.result;</span><br><span class="line">    //do something</span><br><span class="line">    //这里模拟异步操作</span><br><span class="line">    setTimeout(function()&#123;</span><br><span class="line">       //2s之后，回调true分享成功</span><br><span class="line">       result(true);</span><br><span class="line">    &#125;, 2000);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//调用的时候需要这么写</span><br><span class="line">share(&#123;</span><br><span class="line">    title: &quot;title&quot;, </span><br><span class="line">    imgUrl: &quot;http://img.dd.com/xxx.png&quot;, </span><br><span class="line">    link: location.href, </span><br><span class="line">    result: function(res) &#123; //函数作为参数</span><br><span class="line">         console.log(res ? &quot;success&quot; : &quot;failure&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>从封装的角度上讲，js的<code>share</code>方法的参数是一个<code>对象</code>，该对象包含了几个必要的字段，以及一个回调函数，这个回调函数有点像oc的<code>block</code>，<strong>调用者</strong>把一个<code>function</code>传入一个<code>function</code>当作参数，在适当时候，方法内<strong>实现者</strong>调用该<code>function</code>，实现对<strong>调用者</strong>的异步回调。那么如果此时OC来实现<code>share</code>方法，该怎么做呢？其实大概是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">//异步回调</span><br><span class="line">self.jsContext[@&quot;share&quot;] = ^(JSValue *shareData) &#123;  //首先这里要注意，回调的参数不能直接写NSDictionary类型，为何呢？</span><br><span class="line">    //仔细看，打印出的确实是一个NSDictionary，但是result字段对应的不是block而是一个NSDictionary  </span><br><span class="line">    NSLog(@&quot;%@&quot;, [shareData toObject]);     </span><br><span class="line">    //获取shareData对象的result属性，这个JSValue对应的其实是一个javascript的function。</span><br><span class="line">    JSValue *resultFunction = [shareData valueForProperty:@&quot;result&quot;];</span><br><span class="line">    //回调block，将js的function转换为OC的block</span><br><span class="line">    void (^result)(BOOL) = ^(BOOL isSuccess) &#123;</span><br><span class="line">        [resultFunction callWithArguments:@[@(isSuccess)]];</span><br><span class="line">    &#125;;</span><br><span class="line">    //模拟异步回调</span><br><span class="line">    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        NSLog(@&quot;回调分享成功&quot;);</span><br><span class="line">        result(YES);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>其中一些坑，已经在代码的注释写的比较清楚了，这里要注意<code>JavaScript</code>的<code>function</code>和<code>Objective-C</code>的<code>block</code>的转换。</p>
+<p>从上面的一些探讨和尝试来看，足以证明<code>JavaScriptCore</code>的强大，这里不再展开，小伙伴们可以自行探索。</p>
+<h2 id="UIWebView的Cookie管理"><a href="#UIWebView的Cookie管理" class="headerlink" title="UIWebView的Cookie管理"></a>UIWebView的Cookie管理</h2><h3 id="Cookie简介"><a href="#Cookie简介" class="headerlink" title="Cookie简介"></a>Cookie简介</h3><p>说到<code>Cookie</code>，或许有些小伙伴会比较陌生，有些小伙伴会比较熟悉。如果项目中，所有页面都是纯原生来实现的话，一般<code>Cookie</code>这个东西或许我们永远也不会接触到。但是，这里还是要说一下<code>Cookie</code>，因为它真的很重要，由它产生的一些坑也很多。</p>
+<p><code>Cookie</code>在Web利用的最多的地方，是用来记录各种状态。比如你在<code>Safari</code>中打开百度，然后登陆自己的账号，之后打开所有百度相关的页面，都会是登陆状态，而且当你关了电脑，下次开机再次打开<code>Safari</code>打开百度，会发现还是登陆状态，其实这个就利用了<code>Cookie</code>。<code>Cookie</code>中记录了你百度账号的一些信息、有效期等，也维持了跨域请求时登录状态的统计性。</p>
+<p><code>Cookie</code>的域各不相同，有效期也各不相同，一般<code>.baidu.com</code>这样的域的<code>Cookie</code>就是为了跨域时，可以维持一些状态。</p>
+<p>那么在App中，Cookie最常用的就是维持登录状态了。一般Native端都有自己的一套完整登录注册逻辑，一般大部分页面都是原生实现的。当然，也会有一些页面是h5来实现的，虽然h5页面在App中通过<code>WebView</code>加载或多或少都会有点性能问题，感觉不流畅或者体验不好，但是它的灵活性是Native App无法比拟的。那么由此，便产生了一种需求，当Native端用户是登录状态的，打开一个h5页面，h5也要维持用户的登录状态。</p>
+<p>这个需求看似简单，如何实现呢？一般的解决方案是Native保存登录状态的Cookie，在打开h5页面中，把Cookie添加上，以此来维持登录状态。其实坑还是有很多的，比如用户登录或者退出了，h5页面的登录状态也变了，需要刷新，什么时候刷新？<code>WKWebView</code>中<code>Cookie</code>丢失问题？这里简单说下<code>UIWebView</code>的<code>Cookie</code>管理，后面的章节再介绍<code>WKWebView</code>。</p>
+<h3 id="Cookie管理"><a href="#Cookie管理" class="headerlink" title="Cookie管理"></a>Cookie管理</h3><p><code>UIWebView</code>的<code>Cookie</code>管理很简单，一般不需要我们手动操作<code>Cookie</code>，因为所有<code>Cookie</code>都会被<code>[NSHTTPCookieStorage sharedHTTPCookieStorage]</code>这个单例管理，而且<code>UIWebView</code>会自动同步<code>CookieStorage</code>中的Cookie，所以只要我们在Native端，正常登陆退出，h5在适当时候刷新，就可以正确的维持登录状态，不需要做多余的操作。</p>
+<p>可能有一些情况下，我们需要在访问某个链接时，添加一个固定<code>Cookie</code>用来做区分，那么就可以通过<code>header</code>来实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@&quot;http://www.baidu.com&quot;]];</span><br><span class="line">[request addValue:@&quot;customCookieName=1314521;&quot; forHTTPHeaderField:@&quot;Set-Cookie&quot;];</span><br><span class="line">[self.webView loadRequest:request];</span><br></pre></td></tr></table></figure>
+<p>也可以主动操作<code>NSHTTPCookieStorage</code>，添加一个自定义<code>Cookie</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:@&#123;</span><br><span class="line">    NSHTTPCookieName: @&quot;customCookieName&quot;, </span><br><span class="line">    NSHTTPCookieValue: @&quot;1314521&quot;, </span><br><span class="line">    NSHTTPCookieDomain: @&quot;.baidu.com&quot;,</span><br><span class="line">    NSHTTPCookiePath: @&quot;/&quot;</span><br><span class="line">&#125;];</span><br><span class="line">[[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];   //Cookie存在则覆盖，不存在添加</span><br></pre></td></tr></table></figure>
+<p>还有一些常用的方法，如读取所有<code>Cookie</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSArray *cookies = [NSHTTPCookieStorage sharedHTTPCookieStorage].cookies;</span><br></pre></td></tr></table></figure>
+<p><code>Cookie</code>转换成<code>HTTPHeaderFields</code>，并添加到<code>request</code>的<code>header</code>中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//Cookies数组转换为requestHeaderFields</span><br><span class="line">NSDictionary *requestHeaderFields = [NSHTTPCookie requestHeaderFieldsWithCookies:cookies];</span><br><span class="line">//设置请求头</span><br><span class="line">request.allHTTPHeaderFields = requestHeaderFields;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>招摇撞骗</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://raw.githubusercontent.com/objChen/StaticResources/master/wechatqrcode.jpg" alt="chen peng 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JS交互-Cookie传递/" rel="tag"># JS交互 Cookie传递</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/10/iOS-异常捕获-Crash-日志/" rel="next" title="iOS 异常捕获 Crash 日志">
+                <i class="fa fa-chevron-left"></i> iOS 异常捕获 Crash 日志
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/13/iOS中的路由方案-JLRoutes/" rel="prev" title="iOS中的路由方案 -- JLRoutes">
+                iOS中的路由方案 -- JLRoutes <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://raw.githubusercontent.com/objChen/StaticResources/master/nextAvatar.jpg"
+                alt="chen peng" />
+            
+              <p class="site-author-name" itemprop="name">chen peng</p>
+              <p class="site-description motion-element" itemprop="description">想要待在原地，就得使出全身力量拼命奔跑。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:objcchen@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#UIWebView"><span class="nav-number">1.</span> <span class="nav-text">UIWebView</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#UIWebView基本用法"><span class="nav-number">1.1.</span> <span class="nav-text">UIWebView基本用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UIWebView中JavaScript与Objective的交互"><span class="nav-number">1.2.</span> <span class="nav-text">UIWebView中JavaScript与Objective的交互</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#UIWebView-OC调用JS"><span class="nav-number">1.2.1.</span> <span class="nav-text">UIWebView OC调用JS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-stringByEvaluatingJavaScriptFromString"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">1. stringByEvaluatingJavaScriptFromString:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-JavaScriptCore（iOS-7-0-）"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">2. JavaScriptCore（iOS 7.0 +）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UIWebView-JS调用OC"><span class="nav-number">1.2.2.</span> <span class="nav-text">UIWebView JS调用OC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Custom-URL-Scheme（拦截URL）"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">1. Custom URL Scheme（拦截URL）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-JavaScriptCore（iOS-7-0-）-1"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">2. JavaScriptCore（iOS 7.0 +）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UIWebView的Cookie管理"><span class="nav-number">1.3.</span> <span class="nav-text">UIWebView的Cookie管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cookie简介"><span class="nav-number">1.3.1.</span> <span class="nav-text">Cookie简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cookie管理"><span class="nav-number">1.3.2.</span> <span class="nav-text">Cookie管理</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2014 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chen peng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

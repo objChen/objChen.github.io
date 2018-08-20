@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在我们开发的过程中，时不时地需要产生一些随机数。这里我们总结一下Swift中常用的一些随机数生成函数。这里我们将在Playground中来做些示例演示。  整型随机数如果我们想要一个整型的随机数，则可以考虑用arc4random系列函数。我们可以通过man arc4random命令来看一下这个函数的定义：  The arc4random() function uses the key strea">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift中随机数的使用">
+<meta property="og:url" content="http://objchen.cn/2018/03/19/Swift中随机数的使用/index.html">
+<meta property="og:site_name" content="objChen">
+<meta property="og:description" content="在我们开发的过程中，时不时地需要产生一些随机数。这里我们总结一下Swift中常用的一些随机数生成函数。这里我们将在Playground中来做些示例演示。  整型随机数如果我们想要一个整型的随机数，则可以考虑用arc4random系列函数。我们可以通过man arc4random命令来看一下这个函数的定义：  The arc4random() function uses the key strea">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-18T15:38:27.264Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Swift中随机数的使用">
+<meta name="twitter:description" content="在我们开发的过程中，时不时地需要产生一些随机数。这里我们总结一下Swift中常用的一些随机数生成函数。这里我们将在Playground中来做些示例演示。  整型随机数如果我们想要一个整型的随机数，则可以考虑用arc4random系列函数。我们可以通过man arc4random命令来看一下这个函数的定义：  The arc4random() function uses the key strea">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://objchen.cn/2018/03/19/Swift中随机数的使用/"/>
+
+
+
+
+
+  <title>Swift中随机数的使用 | objChen</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">objChen</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">一直在追求如何更有效率的开展工作</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-about"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2018/03/19/Swift中随机数的使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chen peng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/objChen/StaticResources/master/nextAvatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="objChen">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Swift中随机数的使用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-19T22:40:57+08:00">
+                2018-03-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>在我们开发的过程中，时不时地需要产生一些随机数。这里我们总结一下<code>Swift</code>中常用的一些随机数生成函数。这里我们将在<code>Playground</code>中来做些示例演示。</p>
+</blockquote>
+<h3 id="整型随机数"><a href="#整型随机数" class="headerlink" title="整型随机数"></a>整型随机数</h3><p>如果我们想要一个整型的随机数，则可以考虑用<code>arc4random</code>系列函数。我们可以通过<code>man arc4random</code>命令来看一下这个函数的定义：</p>
+<blockquote>
+<p>The arc4random() function uses the key stream generator employed by the arc4 cipher, which uses 8*8 8 bit S-Boxes. The S-Boxes can be inabout (2^1700) states. The arc4random() function returns pseudo-random numbers in the range of 0 to (2^32)-1, and therefore has twice the range of rand(3) and random(3).</p>
+</blockquote>
+<p><code>arc4random</code>使用了<code>arc4密码</code>加密的<code>key stream</code>生成器(请脑补)，产生一个<code>[0, 2^32)</code>区间的随机数(注意是左闭右开区间)。这个函数的返回类型是<code>UInt32</code>。如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arc4random()				// 2,919,646,954</span><br></pre></td></tr></table></figure>
+<p>如果我们想生成一个指定范围内的整型随机数，则可以使用<code>arc4random() % upper_bound</code>的方式，其中<code>upper_bound</code>指定的是上边界，如下处理：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arc4random() % 10			// 8</span><br></pre></td></tr></table></figure>
+<p>不过使用这种方法，在<code>upper_bound</code>不是2的幂次方时，会产生一个所谓<a href="http://eternallyconfuzzled.com/arts/jsw_art_rand.aspx" target="_blank" rel="noopener">Modulo bias(模偏差)</a>的问题。</p>
+<p>我们在控制台中通过<code>man arc4random</code>命令，可以查看<code>arc4random</code>的文档，有这么一条：</p>
+<blockquote>
+<p>arc4random_uniform() will return a uniformly distributed random number less than upper_bound. arc4random_uniform() is recommended over constructions like ‘’arc4random() % upper_bound’’ as it avoids “modulo bias” when the upper bound is not a power of two.</p>
+</blockquote>
+<p>因此可以使用<code>arc4random_uniform</code>，它接受一个<code>UInt32</code>类型的参数，指定随机数区间的上边界<code>upper_bound</code>，该函数生成的随机数范围是<code>[0, upper_bound)</code>，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arc4random_uniform(10)		// 6</span><br></pre></td></tr></table></figure>
+<p>而如果想指定区间的最小值（如随机数区间在<code>[5, 100)</code>），则可以如下处理：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let max: UInt32 = 100</span><br><span class="line">let min: UInt32 = 5</span><br><span class="line">arc4random_uniform(max - min) + min			// 82</span><br></pre></td></tr></table></figure>
+<p>当然，在<code>Swift</code>中也可以使用传统的<code>C</code>函数<code>rand</code>与<code>random</code>。不过这两个函数有如下几个缺点：</p>
+<ol>
+<li>这两个函数都需要初始种子，通常是以当前时间来确定。</li>
+<li>这两个函数的上限在<code>RAND_MAX=0X7fffffff(2147483647)</code>，是<code>arc4random</code>的一半。</li>
+<li><code>rand</code>函数以有规律的低位循环方式实现，更容易预测</li>
+</ol>
+<p>我们以<code>rand</code>为例，看看其使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">srand(UInt32(time(nil)))            // 种子,random对应的是srandom</span><br><span class="line">rand()								// 1,314,695,483</span><br><span class="line">rand() % 10							// 8</span><br></pre></td></tr></table></figure>
+<h3 id="64位整型随机数"><a href="#64位整型随机数" class="headerlink" title="64位整型随机数"></a>64位整型随机数</h3><p>在大部分应用中，上面讲到的几个函数已经足够满足我们获取整型随机数的需求了。不过我们看看它们的函数声明，可以发现这些函数主要是针对<code>32</code>位整型来操作的。如果我们需要生成一个<code>64</code>位的整型随机数呢？毕竟现在的新机器都是支持<code>64</code>位的了。</p>
+<p>目前貌似没有现成的函数来生成<code>64</code>位的随机数，不过<code>jstn</code>在<code>stackoverflow</code>上为我们分享了他的方法。我们一起来看看。</p>
+<p>他首先定义了一个泛型函数，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">func arc4random &lt;T: IntegerLiteralConvertible&gt; (type: T.Type) -&gt; T &#123;</span><br><span class="line">    var r: T = 0</span><br><span class="line">    arc4random_buf(&amp;r, UInt(sizeof(T)))</span><br><span class="line">    return r</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个函数中使用了<code>arc4random_buf</code>来生成随机数。让我们通过<code>man arc4random_buf</code>来看看这个函数的定义：</p>
+<blockquote>
+<p>arc4random_buf() function fills the region buf of length nbytes with ARC4-derived random data.</p>
+</blockquote>
+<p>这个函数使用<code>ARC4</code>加密的随机数来填充该函数第二个参数指定的长度的缓存区域。因此，如果我们传入的是<code>sizeof(UInt64)</code>，该函数便会生成一个随机数来填充<code>8</code>个字节的区域，并返回给<code>r</code>。那么<code>64</code>位的随机数生成方法便可以如下实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">extension UInt64 &#123;</span><br><span class="line">    static func random(lower: UInt64 = min, upper: UInt64 = max) -&gt; UInt64 &#123;</span><br><span class="line">        var m: UInt64</span><br><span class="line">        let u = upper - lower</span><br><span class="line">        var r = arc4random(UInt64)</span><br><span class="line"></span><br><span class="line">        if u &gt; UInt64(Int64.max) &#123;</span><br><span class="line">            m = 1 + ~u</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            m = ((max - (u * 2)) + 1) % u</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        while r &lt; m &#123;</span><br><span class="line">            r = arc4random(UInt64)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return (r % u) + lower</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们来试用一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UInt64.random()					// 4758246381445086013</span><br></pre></td></tr></table></figure>
+<p>当然<code>jstn</code>还提供了<code>Int64</code>，<code>UInt32</code>，<code>Int32</code>的实现，大家可以脑补一下。</p>
+<h3 id="浮点型随机数"><a href="#浮点型随机数" class="headerlink" title="浮点型随机数"></a>浮点型随机数</h3><p>如果需要一个浮点值的随机数，则可以使用<code>drand48</code>函数，这个函数产生一个<code>[0.0, 1.0]</code>区间中的浮点数。这个函数的返回值是<code>Double</code>类型。其使用如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">srand48(Int(time(nil)))</span><br><span class="line">drand48()						// 0.396464773760275</span><br></pre></td></tr></table></figure>
+<p>记住这个函数是需要先调用<code>srand48</code>生成一个种子的初始值。</p>
+<h3 id="一个小示例"><a href="#一个小示例" class="headerlink" title="一个小示例"></a>一个小示例</h3><p>最近写了一个随机键盘，需要对<code>0-9</code>这几个数字做个随机排序，正好用上了上面的<code>arc4random</code>函数，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let arr = [&quot;0&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;]</span><br><span class="line"></span><br><span class="line">let numbers = arr.sort &#123; (_, _) -&gt; Bool in</span><br><span class="line">    arc4random() &lt; arc4random()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在闭包中，随机生成两个数，比较它们之间的大小，来确定数组的排序规则。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>招摇撞骗</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://raw.githubusercontent.com/objChen/StaticResources/master/wechatqrcode.jpg" alt="chen peng 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/09/iOS-键盘事件/" rel="next" title="iOS 键盘事件">
+                <i class="fa fa-chevron-left"></i> iOS 键盘事件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/29/Swift中String与CChar数组的转换/" rel="prev" title="Swift中String与CChar数组的转换">
+                Swift中String与CChar数组的转换 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://raw.githubusercontent.com/objChen/StaticResources/master/nextAvatar.jpg"
+                alt="chen peng" />
+            
+              <p class="site-author-name" itemprop="name">chen peng</p>
+              <p class="site-description motion-element" itemprop="description">想要待在原地，就得使出全身力量拼命奔跑。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:objcchen@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#整型随机数"><span class="nav-number">1.</span> <span class="nav-text">整型随机数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#64位整型随机数"><span class="nav-number">2.</span> <span class="nav-text">64位整型随机数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#浮点型随机数"><span class="nav-number">3.</span> <span class="nav-text">浮点型随机数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一个小示例"><span class="nav-number">4.</span> <span class="nav-text">一个小示例</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2014 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chen peng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

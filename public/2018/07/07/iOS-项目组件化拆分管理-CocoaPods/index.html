@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Refactoring," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="背景在执行pod update之前，可以执行pod outdated来查看有哪些pods有新的版本。 当你执行pod update PODNAME时，CocoaPods会尝试发现PODNAME的可更新的版本，而不会去关注Podfile.lock中的版本。它会把依赖更新到最新的版本。 使用 CocoaPods安装及使用  为了控制篇幅，简短精炼，CocoaPods的简介、安装、使用及常见错误不在本篇">
+<meta name="keywords" content="Refactoring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 项目组件化拆分管理 - CocoaPods">
+<meta property="og:url" content="http://objchen.cn/2018/07/07/iOS-项目组件化拆分管理-CocoaPods/index.html">
+<meta property="og:site_name" content="objChen">
+<meta property="og:description" content="背景在执行pod update之前，可以执行pod outdated来查看有哪些pods有新的版本。 当你执行pod update PODNAME时，CocoaPods会尝试发现PODNAME的可更新的版本，而不会去关注Podfile.lock中的版本。它会把依赖更新到最新的版本。 使用 CocoaPods安装及使用  为了控制篇幅，简短精炼，CocoaPods的简介、安装、使用及常见错误不在本篇">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-19T16:13:35.595Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 项目组件化拆分管理 - CocoaPods">
+<meta name="twitter:description" content="背景在执行pod update之前，可以执行pod outdated来查看有哪些pods有新的版本。 当你执行pod update PODNAME时，CocoaPods会尝试发现PODNAME的可更新的版本，而不会去关注Podfile.lock中的版本。它会把依赖更新到最新的版本。 使用 CocoaPods安装及使用  为了控制篇幅，简短精炼，CocoaPods的简介、安装、使用及常见错误不在本篇">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://objchen.cn/2018/07/07/iOS-项目组件化拆分管理-CocoaPods/"/>
+
+
+
+
+
+  <title>iOS 项目组件化拆分管理 - CocoaPods | objChen</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">objChen</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">一直在追求如何更有效率的开展工作</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-about"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://objchen.cn/2018/07/07/iOS-项目组件化拆分管理-CocoaPods/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chen peng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/objChen/StaticResources/master/nextAvatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="objChen">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS 项目组件化拆分管理 - CocoaPods</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-07T00:07:27+08:00">
+                2018-07-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>在执行<code>pod update</code>之前，可以执行<code>pod outdated</code>来查看有哪些pods有新的版本。</p>
+<p>当你执行<code>pod update PODNAME</code>时，CocoaPods会尝试发现<code>PODNAME</code>的可更新的版本，而不会去关注<code>Podfile.lock</code>中的版本。它会把依赖更新到最新的版本。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><ul>
+<li><p>CocoaPods安装及使用 </p>
+<p>为了控制篇幅，简短精炼，CocoaPods的简介、安装、使用及常见错误不在本篇文章赘述，有需要请移步<a href="objchen.cn">CocoaPods的使用</a></p>
+</li>
+<li><p>新建podspec</p>
+<p>你的项目已经建好了：在项目根目录执行 <code>pod spec create &#39;项目名&#39;</code></p>
+<p>你还没有建项目：执行 <code>pod lib create &#39;项目名&#39;</code></p>
+<p> 需要填写信息，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// 使用的平台</span><br><span class="line">What platform do you want to use?? [ iOS / macOS ] </span><br><span class="line"> &gt; iOS</span><br><span class="line">// 使用的语言</span><br><span class="line">What language do you want to use?? [ Swift / ObjC ] </span><br><span class="line"> &gt; ObjC</span><br><span class="line">// 是否在你的目录中新建一个Demo</span><br><span class="line">Would you like to include a demo application with your library? [ Yes / No ]   </span><br><span class="line"> &gt; Yes</span><br><span class="line">// 是否需要测试框架</span><br><span class="line">Which testing frameworks will you use? [ Specta / Kiwi / None ] </span><br><span class="line"> &gt; None</span><br><span class="line">// 是否需要UI测试</span><br><span class="line">Would you like to do view based testing? [ Yes / No ] </span><br><span class="line"> &gt; No</span><br><span class="line">// 你的类前缀</span><br><span class="line">What is your class prefix? </span><br><span class="line"> &gt; SK</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>添加到远程Git仓库： <code>git remote add origin 远程仓库地址</code></p>
+</li>
+<li><p>xxx.podspec 配置</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Pod::Spec.new <span class="keyword">do</span> <span class="params">|s|</span>  </span><br><span class="line">  s.name             = <span class="string">'SooKit'</span>  <span class="comment"># 名称，pod search搜索的关键词</span></span><br><span class="line">  s.version          = <span class="string">'0.1.0'</span>  <span class="comment"># 版本号</span></span><br><span class="line">  s.summary          = <span class="string">'A short description of SooKit.'</span> <span class="comment"># 简介，pod search搜索的关键词</span></span><br><span class="line">  s.description      = <span class="string">'SooKitSooKitSooKitSooKitSooKit'</span>  <span class="comment"># 详细说明，这个根据库的功能来描述</span></span><br><span class="line">  s.homepage         = <span class="string">'https://github.com/“XXX”/SooKit'</span>  <span class="comment"># 主页地址，例如Github地址</span></span><br><span class="line">  s.license          = &#123; <span class="symbol">:type</span> =&gt; <span class="string">'MIT'</span>, <span class="symbol">:file</span> =&gt; <span class="string">'LICENSE'</span> &#125;  <span class="comment"># 许可证</span></span><br><span class="line">  s.author           = &#123; <span class="string">'“XXX”'</span> =&gt; <span class="string">'“peng_chen@soolife.com.cn”'</span> &#125;  <span class="comment"># 作者</span></span><br><span class="line">  s.source           = &#123; <span class="symbol">:git</span> =&gt; <span class="string">'https://github.com/“XXX”/SooKit.git'</span>, <span class="symbol">:tag</span> =&gt; s.version.to_s &#125;  <span class="comment"># Git仓库地址</span></span><br><span class="line">  s.social_media_url = <span class="string">'https://twitter.com/&lt;XXX&gt;'</span>  <span class="comment"># 社交网址</span></span><br><span class="line">  s.ios.deployment_target = <span class="string">'8.0'</span>  <span class="comment"># 兼容版本</span></span><br><span class="line">  s.source_files     = <span class="string">'SooKit/Classes/**/*'</span> <span class="comment"># 需要包含的源文件，常见的写法如下</span></span><br><span class="line">  s.dependency     <span class="string">"BPushSDK"</span>, <span class="string">"1.4.1"</span>  <span class="comment"># 依赖库，不能依赖未发布的库</span></span><br><span class="line">  s.dependency     <span class="string">'AFNetworking'</span>, <span class="string">'~&gt; 2.3'</span>  <span class="comment"># 依赖库，如有多个可以这样写</span></span><br><span class="line">  s.requires_arc     = <span class="literal">true</span>  <span class="comment"># 是否要求ARC</span></span><br><span class="line">  s.public_header_files = <span class="string">'Pod/Classes/**/*.h'</span>  <span class="comment"># pch 文件</span></span><br><span class="line">  s.frameworks       = <span class="string">'UIKit'</span>, <span class="string">'MapKit'</span>   <span class="comment"># 需要的framework</span></span><br><span class="line">  s.resources        = <span class="string">"XXX/Images/*.png"</span>  <span class="comment"># 需要包含的图片等资源文件</span></span><br><span class="line">  s.resource_bundles = &#123;    <span class="comment"># 需要包含的图片等资源文件</span></span><br><span class="line">    <span class="string">'SooKit'</span> =&gt; [<span class="string">'SooKit/Assets/*.png'</span>]</span><br><span class="line">  &#125;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>s.source_files常见写法</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;Directory1/*&quot;</span><br><span class="line">&quot;Directory1/Directory2/*.&#123;h,m&#125;&quot;</span><br><span class="line">&quot;Directory1/**/*.h&quot;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>“<em>“表示匹配所有文件</em></li>
+<li>“*.{h，m}”表示匹配所有以.h和.m结尾的文件</li>
+<li>“**”表示匹配所有子目录</li>
+</ol>
+<p>​</p>
+<ul>
+<li>s.source常见写法</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">s.source = &#123; :git =&gt; &quot;https://github.com/xxx/xxx.git&quot;, :commit =&gt; &quot;68defea&quot; &#125;</span><br><span class="line">s.source = &#123; :git =&gt; &quot;https://github.com/xxx/xxx.git&quot;, :tag =&gt; 1.0.0 &#125;</span><br><span class="line">s.source = &#123; :git =&gt; &quot;https://github.com/xxx/xxx.git&quot;, :tag =&gt; s.version &#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>commit =&gt;“68defea”表示将这个Pod版本与Git仓库中的某个commit绑定</li>
+<li>tag =&gt; 1.0.0表示将这个Pod版本与Git仓库中的某个版本的commit绑定</li>
+<li>tag =&gt; s.version表示将这个Pod版本与Git仓库中相同版本的commit绑定</li>
+</ol>
+</li>
+<li><p>检查.podspec 执行 <code>pod lib lint 项目名.podspec</code></p>
+</li>
+<li><p>​</p>
+</li>
+<li><p>​</p>
+</li>
+</ul>
+<p><strong>// TODO：未完，忙完再续。</strong></p>
+<h3 id="规则"><a href="#规则" class="headerlink" title="规则"></a>规则</h3><p>基础库 - SooKit (Private Pods)    中类名前缀为SooKit首字母缩写SK</p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>招摇撞骗</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://raw.githubusercontent.com/objChen/StaticResources/master/wechatqrcode.jpg" alt="chen peng 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Refactoring/" rel="tag"># Refactoring</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/05/JS-Promise-Generator-Co/" rel="next" title="JS Promise&Generator&Co">
+                <i class="fa fa-chevron-left"></i> JS Promise&Generator&Co
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/20/iOS-AOP：事务拦截-异常处理-HotFix/" rel="prev" title="iOS AOP：事务拦截 异常处理 HotFix">
+                iOS AOP：事务拦截 异常处理 HotFix <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://raw.githubusercontent.com/objChen/StaticResources/master/nextAvatar.jpg"
+                alt="chen peng" />
+            
+              <p class="site-author-name" itemprop="name">chen peng</p>
+              <p class="site-description motion-element" itemprop="description">想要待在原地，就得使出全身力量拼命奔跑。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:objcchen@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用"><span class="nav-number">2.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#规则"><span class="nav-number">3.</span> <span class="nav-text">规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后"><span class="nav-number">4.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2014 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chen peng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
